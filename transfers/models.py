@@ -5,8 +5,17 @@ from sqlalchemy import Sequence
 from sqlalchemy import Column, Binary, Boolean, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import ConfigParser
 
-db_path = os.path.join(os.path.dirname(__file__), 'transfers.db')
+
+# Read config file
+automationToolsConfigFilePath = '/etc/archivematica/automation-tools/automation-tools.conf'
+config = ConfigParser.SafeConfigParser()
+config.read(automationToolsConfigFilePath)
+databaseDirectory = config.get('automation-tools', 'databaseDirectory')
+
+db_path = os.path.join(databaseDirectory, 'transfers.db')
+
 engine = create_engine('sqlite:///{}'.format(db_path), echo=False)
 
 Session = sessionmaker(bind=engine)

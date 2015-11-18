@@ -16,6 +16,16 @@ import requests
 import subprocess
 import sys
 import time
+import ConfigParser
+
+# Read config file
+automationToolsConfigFilePath = '/etc/archivematica/automation-tools/automation-tools.conf'
+config = ConfigParser.SafeConfigParser()
+config.read(automationToolsConfigFilePath)
+logDirectory = config.get('automation-tools', 'logDirectory')
+databaseDirectory = config.get('automation-tools', 'databaseDirectory')
+pidFileDirectory = config.get('automation-tools', 'pidFileDirectory')
+
 
 try:
     from os import fsencode, fsdecode
@@ -62,7 +72,7 @@ CONFIG = {
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'default',
-            'filename': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'automate-transfer.log'),
+            'filename': os.path.join(logDirectory, 'automate-transfer.log'),
             'backupCount': 2,
             'maxBytes': 10 * 1024,
         },
@@ -75,7 +85,6 @@ CONFIG = {
     },
 }
 logging.config.dictConfig(CONFIG)
-
 
 
 def _call_url_json(url, params):
@@ -368,12 +377,13 @@ def approve_transfer(directory_name, url, api_key, user_name):
     else:
         return None
 
+
 def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False):
     LOGGER.info("Waking up")
     session = Session()
 
     # Check for evidence that this is already running
-    pid_file = os.path.join(THIS_DIR, 'pid.lck')
+    pid_file = os.path.join(pidFileDirectory, 'pid.lck')
     try:
         # Open PID file only if it doesn't exist for read/write
         f = os.fdopen(os.open(pid_file, os.O_CREAT | os.O_EXCL | os.O_RDWR), 'r+')

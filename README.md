@@ -3,11 +3,12 @@ Automation Tools
 
 The Automation Tools project is a set of python scripts, that are designed to automate the processing of transfers in an Archivematica pipeline.
 
-Currently, the only automation tool is automate transfers.  It is used to prepare transfers, move them into the pipelines processing location, and take actions when user input is required.  Only one transfer is sent to the pipeline at a time, the scripts wait until the current transfer is resolved (failed, rejected or stored as an AIP) before automatically starting the next available transfer. 
+Currently, the only automation tool is automate transfers.  It is used to prepare transfers, move them into the pipelines processing location, and take actions when user input is required.  Only one transfer is sent to the pipeline at a time, the scripts wait until the current transfer is resolved (failed, rejected or stored as an AIP) before automatically starting the next available transfer.
 
 The code is available on [Github](http://github.com/artefactual/automation-tools).
 
 The code is deployed to `/usr/lib/archivematica/automation-tools`.
+Configuration files should go into `/etc/archivematica/automation-tools/`, the automation tools require a configuration file named `automation-tools.conf` in this directory to run (a sample file is provided in the `etc/` directory of this repository).
 
 Deployment
 ----------
@@ -24,7 +25,7 @@ This script is run through a crontab entry. Example:
 
 The cron entry executes the `transfer-script.sh` script. This should be run as the same user as Archivematica is run as (likely the `archivematica` user.)
 
-When running, automate transfers stores its working state in transfers.db, a sqlite database.  It contains a record of all the transfers that have been processed.  In a testing environment, deleting this file will cause the tools to re-process any and all folders found in the Transfer Source Location. 
+When running, automate transfers stores its working state in transfers.db, a sqlite database.  It contains a record of all the transfers that have been processed.  In a testing environment, deleting this file will cause the tools to re-process any and all folders found in the Transfer Source Location.
 
 Configuration
 -------------
