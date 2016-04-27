@@ -8,7 +8,7 @@ from shutil import ignore_patterns
 
 def main(transfer_path):
     source = os.path.join(transfer_path)
-    destination = os.path.join(transfer_path, 'objects/')
+    destination = os.path.join(transfer_path, 'objects')
 
     print('move data from' + source + ' to ' + destination)
     src_files = os.listdir(transfer_path)
@@ -21,8 +21,7 @@ def main(transfer_path):
         full_file_name = os.path.join(transfer_path, file_name)
         if (os.path.isfile(full_file_name)):
             print('moving ' + full_file_name)
-            shutil.move(full_file_name, destination + full_file_name)
-
+            shutil.move(full_file_name, os.path.join(destination,full_file_name))
 
     print('move submission documentation into the /metadata/submissionDocumentation')
     source = os.path.join(transfer_path + 'submissionDocumentation')
