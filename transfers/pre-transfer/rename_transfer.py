@@ -7,23 +7,26 @@ import sys
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    print('hello')
-    print(transfer_path)
     source = os.path.join(transfer_path)
     destination = os.path.join(transfer_path, 'objects')
+
     print('move data from' + source + ' to ' + destination)
     src_files = os.listdir(transfer_path)
+
+    # copy folders
+    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'doco'))
+
     # copy files
     for file_name in src_files:
         full_file_name = os.path.join(transfer_path, file_name)
         if (os.path.isfile(full_file_name)):
+            print('moving ' + full_file_name)
             shutil.copy(full_file_name, destination)
-    # copy folders
-    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects','doco'))
+
 
     print('move submission documentation into the /metadata/submissionDocumentation')
-    os.mkdir(transfer_path + '/metadata')
-    os.mkdir(transfer_path + '/metadata/submissionDocumentation')
+    os.mkdir(transfer_path + 'metadata')
+    os.mkdir(transfer_path + 'metadata/submissionDocumentation')
     source = os.path.join(transfer_path + 'doco/')
     destination = os.path.join(transfer_path, 'metadata/submissionDocumentation')
     shutil.move(source, destination)
