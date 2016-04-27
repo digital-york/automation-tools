@@ -21,9 +21,6 @@ def main(transfer_path):
     destination = os.path.join(transfer_path, 'metadata/submissionDocumentation')
     shutil.move(source, destination)
 
-    print ('remove submission documentation from objects directory')
-    shutil.rmtree((transfer_path + '/objects/doco'))
-
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
     main(transfer_path)
