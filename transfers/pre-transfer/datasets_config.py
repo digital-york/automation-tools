@@ -5,8 +5,6 @@ import os
 import shutil
 import sys
 
-THIS_DIR = os.path.abspath(os.path.dirname(__file__))
-
 def main(transfer_path):
     # Update default config
     print('copying datasets processingMCP to', transfer_path)
@@ -16,5 +14,6 @@ def main(transfer_path):
 
 
 if __name__ == '__main__':
+    print(sys.argv)
     transfer_path = sys.argv[1]
     main(transfer_path)
