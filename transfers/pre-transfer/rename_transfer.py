@@ -19,7 +19,7 @@ def main(transfer_path):
     os.mkdir(transfer_path + '/metadata/submissionDocumentation')
     source = os.path.join(transfer_path + 'doco')
     destination = os.path.join(transfer_path, 'metadata/submissionDocumentation')
-    shutil.move(source, destination, symlinks=False, ignore=None)
+    shutil.move(source, destination)
 
     print ('remove submission documentation from objects directory')
     shutil.rmtree((transfer_path + '/objects/doco'))
