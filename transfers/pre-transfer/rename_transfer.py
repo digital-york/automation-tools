@@ -12,7 +12,13 @@ def main(transfer_path):
     source = os.path.join(transfer_path + '*')
     destination = os.path.join(transfer_path, 'objects')
     print('move data from' + source + ' to ' + destination)
-    shutil.copy(source, destination)
+    src_files = os.listdir(transfer_path)
+    # copy files
+    for file_name in src_files:
+        full_file_name = os.path.join(transfer_path, file_name)
+        if (os.path.isfile(full_file_name)):
+            shutil.copy(full_file_name, destination)
+    # copy folders
     shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects','doco'))
 
     print('move submission documentation into the /metadata/submissionDocumentation')
