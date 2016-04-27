@@ -14,14 +14,14 @@ def main(transfer_path):
     src_files = os.listdir(transfer_path)
 
     # copy folders
-    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation'))
+    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation', 'processingMCP.xml'))
 
     # copy files
     for file_name in src_files:
         full_file_name = os.path.join(transfer_path, file_name)
         if (os.path.isfile(full_file_name)):
             print('moving ' + full_file_name)
-            shutil.copy(full_file_name, destination)
+            shutil.move(full_file_name, destination)
 
 
     print('move submission documentation into the /metadata/submissionDocumentation')
@@ -32,9 +32,9 @@ def main(transfer_path):
     print('reset all file permissions')
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
-            os.chown(os.path.join(root, d), 'archivematica', 'archivematica')
+            shutil.chown(os.path.join(root, d), 'archivematica', 'archivematica')
         for f in files:
-            os.chown(os.path.join(root, f), 'archivematica', 'archivematica')
+            shutil.chown(os.path.join(root, f), 'archivematica', 'archivematica')
 
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
