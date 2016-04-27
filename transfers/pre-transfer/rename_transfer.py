@@ -25,10 +25,8 @@ def main(transfer_path):
 
 
     print('move submission documentation into the /metadata/submissionDocumentation')
-    os.mkdir(transfer_path + 'metadata')
-    os.mkdir(transfer_path + 'metadata/submissionDocumentation')
-    source = os.path.join(transfer_path + 'doco/')
-    destination = os.path.join(transfer_path, 'metadata/submissionDocumentation')
+    source = os.path.join(transfer_path + 'submissionDocumentation')
+    destination = os.path.join(transfer_path, 'metadata')
     shutil.move(source, destination)
     os.rmdir(source)
 
