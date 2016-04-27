@@ -9,7 +9,6 @@ from shutil import ignore_patterns
 def main(transfer_path):
     source = os.path.join(transfer_path)
     destination = os.path.join(transfer_path, 'objects/')
-    shutil.chown(destination, 'archivematica', 'archivematica')
 
     print('move data from' + source + ' to ' + destination)
     src_files = os.listdir(transfer_path)
@@ -32,6 +31,7 @@ def main(transfer_path):
 
     print('reset all file permissions')
     for root, dirs, files in os.walk(transfer_path):
+        shutil.chown(root, 'archivematica', 'archivematica')
         for d in dirs:
             shutil.chown(os.path.join(root, d), 'archivematica', 'archivematica')
         for f in files:
