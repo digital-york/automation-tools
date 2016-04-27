@@ -8,13 +8,11 @@ import sys
 def main(transfer_path):
     print('hello')
     print(transfer_path)
-    print('create a directory called objects')
-    os.mkdir(transfer_path + '/objects')
-    print('move data into the objects directory')
-    source = os.path.join(transfer_path + '')
-    destination = os.path.join(transfer_path, '/objects')
+    source = os.path.join(transfer_path)
+    destination = os.path.join(transfer_path, 'objects')
+    print('move data from' + source + ' to ' + destination)
     shutil.copytree(source, destination, symlinks=False, ignore=None)
-    shutil.rmtree((transfer_path + 'objects/objects'))
+    shutil.rmtree(transfer_path + 'objects/objects')
 
     print('move submission documentation into the /metadata/submissionDocumentation')
     os.mkdir(transfer_path + '/metadata')
