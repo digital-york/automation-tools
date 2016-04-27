@@ -14,7 +14,7 @@ def main(transfer_path):
     src_files = os.listdir(transfer_path)
 
     # copy folders
-    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'doco'))
+    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation'))
 
     # copy files
     for file_name in src_files:
