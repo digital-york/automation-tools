@@ -10,7 +10,6 @@ def main(transfer_path):
     print('hello')
     print(transfer_path)
     source = os.path.join(transfer_path)
-    os.mkdir(transfer_path + '/objects')
     destination = os.path.join(transfer_path, 'objects')
     print('move data from' + source + ' to ' + destination)
     shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects','doco'))
