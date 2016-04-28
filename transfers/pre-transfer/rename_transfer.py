@@ -9,8 +9,8 @@ import grp
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    os.mkdir(os.path.join(transfer_path, 'objects'))
-    os.mkdir(os.path.join(transfer_path, 'logs'))
+    os.mkdir(transfer_path + '/objects')
+    os.mkdir(transfer_path + '/logs')
     src_files = os.listdir(transfer_path)
 
     # copy files and folders
@@ -45,7 +45,7 @@ def main(transfer_path):
     os.chown(os.path.join(transfer_path, 'objects'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata/submissionDocumentation'), uid, gid)
-    #os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
+    os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
     os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
 
     for root, dirs, files in os.walk(transfer_path):
