@@ -11,8 +11,10 @@ from shutil import ignore_patterns
 def main(transfer_path):
     obj = transfer_path
     log = transfer_path
+    md = transfer_path
     os.mkdir(os.join.path(log,'logs'))
     os.mkdir(os.join.path(obj,'objects'))
+    os.mkdir(os.join.path(md, 'metadata'))
     print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
@@ -30,13 +32,16 @@ def main(transfer_path):
                             print(e)
                         except OSError as e:
                             print(e)
+                elif name == 'submissionDocumentation':
+                    dest = os.path.join(transfer_path, os.path.join('metadata/', name))
+                try:
+                    shutil.move(full_name, dest)
+                except AttributeError as e:
+                    print(e)
+                except OSError as e:
+                    print(e)
         except OSError as e:
             print(e)
-
-    print('move submission documentation into the /metadata/submissionDocumentation')
-    source = os.path.join(transfer_path,'submissionDocumentation')
-    destination = os.path.join(transfer_path, 'metadata/submissionDocumentation/')
-    shutil.move(source, destination)
 
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
