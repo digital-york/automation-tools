@@ -44,6 +44,7 @@ def main(transfer_path):
     print('reset all file permissions')
     os.chown(os.path.join(transfer_path, 'objects'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
+    os.chown(os.path.join(transfer_path, 'metadata/submissionDocumentation'), uid, gid)
     #os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
     os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
 
