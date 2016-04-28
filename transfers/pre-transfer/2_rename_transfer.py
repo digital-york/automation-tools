@@ -14,6 +14,7 @@ def main(transfer_path):
     md = transfer_path
     src_files = os.listdir(transfer_path)
 
+    # TODO check there isn't already a folder called objects, if there is rename it; ditto logs; ditto metadata
     os.mkdir(os.path.join(obj,'objects'))
 
     print('Arrange files and folders')
@@ -34,10 +35,10 @@ def main(transfer_path):
 
     os.mkdir(os.path.join(log, 'logs'))
 
+    print('Reset all file permissions to archivematica:archivematica')
+
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
-
-    print('Reset all file permissions to archivematica:archivematica')
 
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
