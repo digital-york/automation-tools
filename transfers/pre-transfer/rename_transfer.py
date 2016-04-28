@@ -14,7 +14,7 @@ def main(transfer_path):
     src_files = os.listdir(transfer_path)
 
     # copy folders
-    shutil.copytree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation', 'processingMCP.xml'))
+    shutil.movetree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation', 'processingMCP.xml'))
 
     # copy files
     for file_name in src_files:
@@ -30,10 +30,11 @@ def main(transfer_path):
 
     print('reset all file permissions')
     for root, dirs, files in os.walk(transfer_path):
-        shutil.chown(root, 'archivematica', 'archivematica')
         for d in dirs:
+            print(d)
             shutil.chown(os.path.join(root, d), 'archivematica', 'archivematica')
         for f in files:
+            print(f)
             shutil.chown(os.path.join(root, f), 'archivematica', 'archivematica')
 
 if __name__ == '__main__':
