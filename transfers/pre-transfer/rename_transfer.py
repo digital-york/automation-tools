@@ -30,13 +30,13 @@ def main(transfer_path):
                         except OSError as e:
                             print(e)
                 elif name == 'submissionDocumentation':
-                    dest = os.path.join(transfer_path, os.path.join('metadata', name))
-                try:
-                    shutil.move(full_name, dest)
-                except AttributeError as e:
-                    print(e)
-                except OSError as e:
-                    print(e)
+                    dest_m = os.path.join(transfer_path, os.path.join('metadata', name))
+                    try:
+                        shutil.move(full_name, dest_m)
+                    except AttributeError as e:
+                        print(e)
+                    except OSError as e:
+                        print(e)
         except OSError as e:
             print(e)
 
