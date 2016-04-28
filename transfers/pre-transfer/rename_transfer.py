@@ -19,13 +19,15 @@ def main(transfer_path):
     # copy files
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
-        print(full_name)
-        print(name)
         try:
             if name != 'objects':
                 if name != 'submissionDocumentation':
                     if name != 'processingMCP.xml':
-                        os.mv(full_name, os.path.join(transfer_path, os.path.join('objects/',name)))
+                        print(full_name)
+                        print(name)
+                        dest = os.path.join(transfer_path, os.path.join('objects/',name))
+                        print(dest)
+                    os.mv(full_name, dest)
         except OSError as e:
             print(e)
 
@@ -38,7 +40,7 @@ def main(transfer_path):
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
             print(d)
-            shutil.chown(os.path.join(transfer_path, d), 'archivematica', 'archivematica')
+            #shutil.chown(os.path.join(transfer_path, d), 'archivematica', 'archivematica')
         for f in files:
             print(f)
             shutil.chown(os.path.join(transfer_path, f), 'archivematica', 'archivematica')
