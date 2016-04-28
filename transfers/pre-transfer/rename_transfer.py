@@ -20,7 +20,7 @@ def main(transfer_path):
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
-            if name != 'submissionDocumentation' or name != 'metadata' or name != 'processingMCP.xml':
+            if name != 'submissionDocumentation' and name != 'metadata' and name != 'processingMCP.xml':
                 dest = os.path.join(transfer_path, os.path.join('objects',name))
                 shutil.move(full_name, dest)
             elif name == 'submissionDocumentation':
