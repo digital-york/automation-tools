@@ -12,57 +12,38 @@ def main(transfer_path):
     obj = transfer_path
     log = transfer_path
     md = transfer_path
-    print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
     os.mkdir(os.path.join(obj,'objects'))
 
-    # copy files and folders
+    print('Arrange files and folders')
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
-            if name != 'submissionDocumentation':
-                if name != 'objects':
-                    if name != 'metadata':
-                        if name != 'processingMCP.xml':
-                            dest = os.path.join(transfer_path, os.path.join('objects',name))
-                            try:
-                                shutil.move(full_name, dest)
-                            except AttributeError as e:
-                                print(e)
-                            except OSError as e:
-                                print(e)
+            if name != 'submissionDocumentation' or name != 'metadata' or name != 'processingMCP.xml':
+                dest = os.path.join(transfer_path, os.path.join('objects',name))
+                shutil.move(full_name, dest)
             elif name == 'submissionDocumentation':
-                os.mkdir(os.path.join(obj, 'metadata'))
+                os.mkdir(os.path.join(md, 'metadata'))
                 dest_m = os.path.join(transfer_path, os.path.join('metadata', name))
-                try:
-                    shutil.move(full_name, dest_m)
-                except AttributeError as e:
-                    print(e)
-                except OSError as e:
-                    print(e)
+                shutil.move(full_name, dest_m)
+        except AttributeError as e:
+            print(e)
         except OSError as e:
             print(e)
 
-    os.mkdir(os.path.join(obj, 'logs'))
+    os.mkdir(os.path.join(log, 'logs'))
 
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
 
-    print('reset all file permissions')
-    os.chown(os.path.join(obj, 'objects'), uid,gid)
-    os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
-    os.chown(os.path.join(transfer_path, 'metadata/submissionDocumentation'), uid, gid)
-    os.chown(os.path.join(log, 'logs'), uid,gid)
-    os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
+    print('Reset all file permissions to archivematica:archivematica')
 
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
-            print(d)
-            #shutil.chown(os.path.join(transfer_path, d), uid,gid)
+            os.chown(os.path.join(root, d), uid,gid)
         for f in files:
-            print(f)
-            #shutil.chown(os.path.join(transfer_path, f), uid,gid)
+            os.chown(os.path.join(root, f), uid,gid)
 
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
