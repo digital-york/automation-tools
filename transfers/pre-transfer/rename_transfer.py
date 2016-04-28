@@ -9,8 +9,9 @@ import grp
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    os.mkdir(transfer_path + '/objects')
-    os.mkdir(transfer_path + '/logs')
+    os.mkdir(transfer_path + 'objects')
+    os.mkdir(transfer_path + 'logs')
+    print(transfer_path)
     src_files = os.listdir(transfer_path)
 
     # copy files and folders
@@ -20,10 +21,7 @@ def main(transfer_path):
             if name != 'objects':
                 if name != 'submissionDocumentation':
                     if name != 'processingMCP.xml':
-                        print(full_name)
-                        print(name)
                         dest = os.path.join(transfer_path, os.path.join('objects/',name))
-                        print(dest)
                         try:
                             shutil.move(full_name, dest)
                         except AttributeError as e:
