@@ -8,7 +8,6 @@ from shutil import ignore_patterns
 
 def main(transfer_path):
     source = os.path.join(transfer_path)
-    os.mkdir('objects')
     destination = os.path.join(transfer_path, 'objects')
 
     print('move data from' + source + ' to ' + destination)
