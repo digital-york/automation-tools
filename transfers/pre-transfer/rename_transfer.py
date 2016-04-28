@@ -35,7 +35,7 @@ def main(transfer_path):
 
     print('move submission documentation into the /metadata/submissionDocumentation')
     source = os.path.join(transfer_path,'submissionDocumentation')
-    destination = os.path.join(transfer_path, 'metadata/')
+    destination = os.path.join(transfer_path, 'metadata/submissionDocumentation/')
     shutil.move(source, destination)
 
     uid = pwd.getpwnam("archivematica").pw_uid
@@ -44,7 +44,7 @@ def main(transfer_path):
     print('reset all file permissions')
     os.chown(os.path.join(transfer_path, 'objects'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
-    os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
+    #os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
     os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
 
     for root, dirs, files in os.walk(transfer_path):
