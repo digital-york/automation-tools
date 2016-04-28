@@ -25,7 +25,7 @@ def main(transfer_path):
             if name != 'objects':
                 if name != 'submissionDocumentation':
                     if name != 'processingMCP.xml':
-                        shutil.move(full_name, os.path.join(os.path.join(transfer_path, 'objects/' + name))
+                        shutil.move(full_name, os.path.join(transfer_path, 'objects/'))
         except OSError as e:
             print(e)
 
