@@ -12,9 +12,6 @@ def main(transfer_path):
     obj = transfer_path
     log = transfer_path
     md = transfer_path
-    os.mkdir(os.path.join(log,'logs'))
-    os.mkdir(os.path.join(obj,'objects'))
-    os.mkdir(os.path.join(md, 'metadata'))
     print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
@@ -25,7 +22,7 @@ def main(transfer_path):
             if name != 'objects':
                 if name != 'submissionDocumentation':
                     if name != 'processingMCP.xml':
-                        dest = os.path.join(transfer_path, os.path.join('objects/',name))
+                        dest = os.path.join(transfer_path, os.path.join('objects',name))
                         try:
                             shutil.move(full_name, dest)
                         except AttributeError as e:
@@ -33,7 +30,7 @@ def main(transfer_path):
                         except OSError as e:
                             print(e)
                 elif name == 'submissionDocumentation':
-                    dest = os.path.join(transfer_path, os.path.join('metadata/', name))
+                    dest = os.path.join(transfer_path, os.path.join('metadata', name))
                 try:
                     shutil.move(full_name, dest)
                 except AttributeError as e:
