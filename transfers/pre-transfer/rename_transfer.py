@@ -8,7 +8,7 @@ from shutil import ignore_patterns
 
 def main(transfer_path):
     source = os.path.join(transfer_path)
-    destination = os.path.join(transfer_path, 'objects/')
+    destination = os.path.join(transfer_path, 'objects')
 
     print('move data from' + source + ' to ' + destination)
     src_files = os.listdir(transfer_path)
@@ -21,11 +21,11 @@ def main(transfer_path):
         full_name = os.path.join(transfer_path, name)
         print(full_name)
         if name != 'objects' or name != 'submissionDocumentation' or name != 'processingMCP.xml':
-            shutil.move(full_name, destination + name)
+            shutil.move(full_name, os.path.join(destination,name))
 
     print('move submission documentation into the /metadata/submissionDocumentation')
-    source = os.path.join(transfer_path + 'submissionDocumentation')
-    destination = os.path.join(transfer_path, 'metadata/')
+    source = os.path.join(transfer_path,'submissionDocumentation')
+    destination = os.path.join(transfer_path, 'metadata')
     shutil.move(source, destination)
 
     print('reset all file permissions')
