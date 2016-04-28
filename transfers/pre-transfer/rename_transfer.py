@@ -27,7 +27,12 @@ def main(transfer_path):
                         print(name)
                         dest = os.path.join(transfer_path, os.path.join('objects/',name))
                         print(dest)
-                    os.mv(full_name, dest)
+                        try:
+                            shutil.move(full_name, dest)
+                        except AttributeError as e:
+                            print(e)
+                        except OSError as e:
+                            print(e)
         except OSError as e:
             print(e)
 
