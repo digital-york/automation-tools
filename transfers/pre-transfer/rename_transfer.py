@@ -9,9 +9,11 @@ import grp
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    os.mkdir(transfer_path + 'objects')
-    os.mkdir(transfer_path + 'logs')
-    print(transfer_path)
+    obj = transfer_path + 'objects'
+    log = transfer_path + 'logs'
+    os.mkdir(obj)
+    os.mkdir(log)
+    print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
     # copy files and folders
