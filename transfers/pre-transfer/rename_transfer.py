@@ -7,17 +7,11 @@ import sys
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    source = os.path.join(transfer_path)
-    os.mkdir(os.path.join(transfer_path,'objects'))
-    #destination = os.path.join(transfer_path, 'objects/')
-
-    #print('move data from' + source + ' to ' + destination)
+    os.mkdir(os.path.join(transfer_path, 'objects'))
+    os.mkdir(os.path.join(transfer_path, 'logs'))
     src_files = os.listdir(transfer_path)
 
-    # copy folders
-    # shutil.movetree(source, destination, symlinks=False, ignore=ignore_patterns('objects', 'submissionDocumentation', 'processingMCP.xml'))
-
-    # copy files
+    # copy files and folders
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
@@ -43,13 +37,17 @@ def main(transfer_path):
     shutil.move(source, destination)
 
     print('reset all file permissions')
+    shutil.chown(os.path.join(transfer_path, 'objects'), 'archivematica', 'archivematica')
+    shutil.chown(os.path.join(transfer_path, 'metadata'), 'archivematica', 'archivematica')
+    shutil.chown(os.path.join(transfer_path, 'logs'), 'archivematica', 'archivematica')
+    shutil.chown(os.path.join(transfer_path, 'processingMCP.xml'), 'archivematica', 'archivematica')
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
             print(d)
             #shutil.chown(os.path.join(transfer_path, d), 'archivematica', 'archivematica')
         for f in files:
             print(f)
-            shutil.chown(os.path.join(transfer_path, f), 'archivematica', 'archivematica')
+            #shutil.chown(os.path.join(transfer_path, f), 'archivematica', 'archivematica')
 
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
