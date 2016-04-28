@@ -31,10 +31,10 @@ def main(transfer_path):
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
             print(d)
-            shutil.chown(os.path.join(root, d), 'archivematica', 'archivematica')
+            shutil.chown(os.path.join(transfer_path, d), 'archivematica', 'archivematica')
         for f in files:
             print(f)
-            shutil.chown(os.path.join(root, f), 'archivematica', 'archivematica')
+            shutil.chown(os.path.join(transfer_path, f), 'archivematica', 'archivematica')
 
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
