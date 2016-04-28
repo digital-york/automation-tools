@@ -15,30 +15,36 @@ def main(transfer_path):
     print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
+    os.mkdir(os.path.join(obj,'objects'))
+
     # copy files and folders
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
-            if name != 'objects':
-                if name != 'submissionDocumentation':
-                    if name != 'processingMCP.xml':
-                        dest = os.path.join(transfer_path, os.path.join('objects',name))
-                        try:
-                            shutil.move(full_name, dest)
-                        except AttributeError as e:
-                            print(e)
-                        except OSError as e:
-                            print(e)
-                elif name == 'submissionDocumentation':
-                    dest_m = os.path.join(transfer_path, os.path.join('metadata', name))
-                    try:
-                        shutil.move(full_name, dest_m)
-                    except AttributeError as e:
-                        print(e)
-                    except OSError as e:
-                        print(e)
+            if name != 'submissionDocumentation':
+                if name != 'objects':
+                    if name != 'metadata':
+                        if name != 'processingMCP.xml':
+                            dest = os.path.join(transfer_path, os.path.join('objects',name))
+                            try:
+                                shutil.move(full_name, dest)
+                            except AttributeError as e:
+                                print(e)
+                            except OSError as e:
+                                print(e)
+            elif name == 'submissionDocumentation':
+                os.mkdir(os.path.join(obj, 'metadata'))
+                dest_m = os.path.join(transfer_path, os.path.join('metadata', name))
+                try:
+                    shutil.move(full_name, dest_m)
+                except AttributeError as e:
+                    print(e)
+                except OSError as e:
+                    print(e)
         except OSError as e:
             print(e)
+
+    os.mkdir(os.path.join(obj, 'logs'))
 
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
