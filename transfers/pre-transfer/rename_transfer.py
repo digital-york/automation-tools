@@ -12,9 +12,9 @@ def main(transfer_path):
     obj = transfer_path
     log = transfer_path
     md = transfer_path
-    os.mkdir(os.join.path(log,'logs'))
-    os.mkdir(os.join.path(obj,'objects'))
-    os.mkdir(os.join.path(md, 'metadata'))
+    os.mkdir(os.path.join(log,'logs'))
+    os.mkdir(os.path.join(obj,'objects'))
+    os.mkdir(os.path.join(md, 'metadata'))
     print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
