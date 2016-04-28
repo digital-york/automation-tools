@@ -9,10 +9,10 @@ import grp
 from shutil import ignore_patterns
 
 def main(transfer_path):
-    obj = transfer_path + 'objects'
-    log = transfer_path + 'logs'
-    os.mkdir(obj)
-    os.mkdir(log)
+    obj = transfer_path
+    log = transfer_path
+    os.mkdir(os.join.path(log,'logs'))
+    os.mkdir(os.join.path(obj,'objects'))
     print('TRANSFER PATH ' + transfer_path)
     src_files = os.listdir(transfer_path)
 
@@ -42,10 +42,10 @@ def main(transfer_path):
     gid = grp.getgrnam("archivematica").gr_gid
 
     print('reset all file permissions')
-    os.chown(os.path.join(transfer_path, 'objects'), uid,gid)
+    os.chown(os.path.join(obj, 'objects'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
     os.chown(os.path.join(transfer_path, 'metadata/submissionDocumentation'), uid, gid)
-    os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
+    os.chown(os.path.join(log, 'logs'), uid,gid)
     os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
 
     for root, dirs, files in os.walk(transfer_path):
