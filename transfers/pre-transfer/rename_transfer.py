@@ -21,10 +21,13 @@ def main(transfer_path):
         full_name = os.path.join(transfer_path, name)
         print(full_name)
         print(name)
-        if name != 'objects':
-            if name != 'submissionDocumentation':
-                if name != 'processingMCP.xml':
-                    shutil.move(full_name, os.path.join(destination,name))
+        try:
+            if name != 'objects':
+                if name != 'submissionDocumentation':
+                    if name != 'processingMCP.xml':
+                        shutil.move(full_name, destination)
+        except OSError as e:
+            print(e)
 
     print('move submission documentation into the /metadata/submissionDocumentation')
     source = os.path.join(transfer_path,'submissionDocumentation')
