@@ -4,6 +4,8 @@ from __future__ import print_function
 import os
 import shutil
 import sys
+import pwd
+import grp
 from shutil import ignore_patterns
 
 def main(transfer_path):
@@ -36,18 +38,22 @@ def main(transfer_path):
     destination = os.path.join(transfer_path, 'metadata/')
     shutil.move(source, destination)
 
+    uid = pwd.getpwnam("archivematica").pw_uid
+    gid = grp.getgrnam("archivematica").gr_gid
+
     print('reset all file permissions')
-    shutil.chown(os.path.join(transfer_path, 'objects'), 'archivematica', 'archivematica')
-    shutil.chown(os.path.join(transfer_path, 'metadata'), 'archivematica', 'archivematica')
-    shutil.chown(os.path.join(transfer_path, 'logs'), 'archivematica', 'archivematica')
-    shutil.chown(os.path.join(transfer_path, 'processingMCP.xml'), 'archivematica', 'archivematica')
+    os.chown(os.path.join(transfer_path, 'objects'), uid,gid)
+    os.chown(os.path.join(transfer_path, 'metadata'), uid,gid)
+    os.chown(os.path.join(transfer_path, 'logs'), uid,gid)
+    os.chown(os.path.join(transfer_path, 'processingMCP.xml'), uid,gid)
+
     for root, dirs, files in os.walk(transfer_path):
         for d in dirs:
             print(d)
-            #shutil.chown(os.path.join(transfer_path, d), 'archivematica', 'archivematica')
+            #shutil.chown(os.path.join(transfer_path, d), uid,gid)
         for f in files:
             print(f)
-            #shutil.chown(os.path.join(transfer_path, f), 'archivematica', 'archivematica')
+            #shutil.chown(os.path.join(transfer_path, f), uid,gid)
 
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
