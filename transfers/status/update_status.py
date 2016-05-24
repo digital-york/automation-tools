@@ -6,8 +6,8 @@ import shutil
 import sys
 
 def main(sip_uuid,transfer_path):
-    print sip_uuid
-    print transfer_path
+    print(sip_uuid)
+    print(transfer_path)
 
 if __name__ == '__main__':
     print(sys.argv)
