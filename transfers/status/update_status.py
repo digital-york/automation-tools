@@ -5,12 +5,20 @@ import os
 import shutil
 import sys
 
-def main(sip_uuid,transfer_path):
+def main(transfer_path,sip_uuid):
+
     print(sip_uuid)
+    # split at '/'
+    # call localhost:3000/deposit/[1]
+    # post aip_id, sip_uuid
     print(transfer_path)
+    # call archivematica api to get aip_uuid
+    # call archivematica api to get status
+
+    print('http://192.168.168.192/api/transfer/status/%s/?username=geekscruff&api_key=66f63aa9f4d9c005e8920c588267f126c0d53bff',sip_uud)
+    #
 
 if __name__ == '__main__':
-    print(sys.argv)
-    sip_uuid = sys.argv[1]
-    transfer_path = sys.argv[2]
+    transfer_path = sys.argv[1]
+    sip_uuid = sys.argv[2]
     main(sip_uuid,transfer_path)

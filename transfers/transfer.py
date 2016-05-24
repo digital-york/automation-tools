@@ -326,10 +326,9 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         if result:
             LOGGER.info('Approved %s', result)
             new_transfer = Unit(uuid=result, path=target, unit_type='transfer', current=True)
-            # RUN SCRIPTS HERE to get aip status
             run_scripts('status',
-                        result,
-                        target
+                        target,
+                        result
                         )
             LOGGER.info('New transfer: %s', new_transfer)
             session.add(new_transfer)
@@ -337,6 +336,12 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
     else:
         # RUN SCRIPTS HERE to add 'failed to approve' status
+        run_scripts('status',
+                    target,
+                    'Not approved'
+                    )
+        # How do I get the transfer path here?
+        # Send an email?
         LOGGER.warning('Not approved')
         new_transfer = Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)
