@@ -129,6 +129,7 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
 
     # If Transfer is complete, get the SIP's status
     if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info['sip_uuid'] != 'BACKLOG':
+        # RUN status script here
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
         # Update DB to refer to this one
         db_unit = session.query(Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()

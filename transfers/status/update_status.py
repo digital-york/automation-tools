@@ -21,4 +21,4 @@ def main(transfer_path,sip_uuid):
 if __name__ == '__main__':
     transfer_path = sys.argv[1]
     sip_uuid = sys.argv[2]
-    main(sip_uuid,transfer_path)
+    main(transfer_path,sip_uuid)
