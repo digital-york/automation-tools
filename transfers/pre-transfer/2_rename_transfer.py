@@ -6,7 +6,6 @@ import shutil
 import sys
 import pwd
 import grp
-from shutil import ignore_patterns
 
 def main(transfer_path):
     obj = transfer_path

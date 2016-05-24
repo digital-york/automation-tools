@@ -14,6 +14,5 @@ def main(transfer_path):
 
 
 if __name__ == '__main__':
-    print(sys.argv)
     transfer_path = sys.argv[1]
     main(transfer_path)

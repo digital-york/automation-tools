@@ -326,11 +326,17 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         if result:
             LOGGER.info('Approved %s', result)
             new_transfer = Unit(uuid=result, path=target, unit_type='transfer', current=True)
+            # RUN SCRIPTS HERE to get aip status
+            run_scripts('status',
+                        result,
+                        target
+                        )
             LOGGER.info('New transfer: %s', new_transfer)
             session.add(new_transfer)
             break
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
     else:
+        # RUN SCRIPTS HERE to add 'failed to approve' status
         LOGGER.warning('Not approved')
         new_transfer = Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)
