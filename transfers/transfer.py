@@ -332,18 +332,18 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
             LOGGER.info('Approved %s', result)
             new_transfer = Unit(uuid=result, path=target, unit_type='transfer', current=True)
             LOGGER.info('New transfer: %s', new_transfer)
+            run_scripts('status',
+                        'APPROVED',
+                        am_url,
+                        user_name,
+                        api_key,
+                        target,
+                        result
+                        )
             session.add(new_transfer)
             break
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
         LOGGER.info('Finished %s', target)
-        run_scripts('status',
-                'APPROVED',
-                am_url,
-                user_name,
-                api_key,
-                target,
-                result
-                )
     else:
         # JA RUN SCRIPTS to add 'NOT APPROVED' status
         # JA RUN SCRIPTS to send an email

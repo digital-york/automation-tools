@@ -122,6 +122,7 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
+    print("I have been called!!!")
     print(transfer_path)
 
 main(status, uuid, transfer_path, url, params)
