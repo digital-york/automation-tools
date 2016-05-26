@@ -34,7 +34,7 @@ def main(status, uuid, transfer_path, url, params):
             print(count)
             if count > 0:
                 time.sleep(10)
-            sip_uuid, status = get_transfer_details(uuid, url, params)
+            status,sip_uuid = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
         print(sip_uuid)
@@ -80,7 +80,7 @@ def get_transfer_details(uuid, url, params):
     status = aip['status']
     sip_uuid = aip['uuid']
     print('printing aip')
-    print('aip')
+    print(aip)
     return (status, sip_uuid)
 
 def get_sip_details(uuid, url, params):
