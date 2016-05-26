@@ -416,6 +416,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         LOGGER.debug('No current unit', exc_info=True)
         unit_uuid = unit_type = ''
         LOGGER.info('Current unit: unknown.  Assuming new run.')
+        transfer_path = None
         status = 'UNKNOWN'
     else:
         LOGGER.info('Current unit: %s', current_unit)
@@ -454,6 +455,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         session.commit()
         os.remove(pid_file)
         return 0
+    elif status != 'UNKNOWN':
+        #do nothing
     else:
         run_scripts('status',
                     status,
