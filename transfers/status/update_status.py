@@ -65,7 +65,6 @@ def main(status, uuid, transfer_path, url, params):
 def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
-    print(aip)
     status = aip['status']
     sip_uuid = aip['uuid']
     return (status, sip_uuid)
@@ -82,6 +81,7 @@ def get_aip_details(uuid, url):
     get_url = url + ':8000/api/v2/search/package/'
     params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
+    print(aip)
     aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
     return (status, aip_location)
