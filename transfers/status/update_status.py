@@ -87,7 +87,7 @@ def get_sip_details(uuid, url, params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     print('printing aip 2')
-    print('aip')
+    print(aip)
     status = aip['status']
     return status
 
