@@ -48,10 +48,6 @@ def main(status, uuid, transfer_path, url, params):
         # send email???
             print('fail')
 
-        print(uuid)
-        print(aip_location)
-        print(status)
-
         hydra_params = {"aip": {
             "aip_uuid": uuid,
             "status": status,
@@ -84,6 +80,7 @@ def get_aip_details(uuid, url):
     get_url = url + ':8000/api/v2/search/package/'
     params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
+    print('printing aip')
     print(aip)
     aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
