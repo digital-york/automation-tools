@@ -456,8 +456,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         os.remove(pid_file)
         return 0
     elif status != 'UNKNOWN':
-        #do nothing
-    else:
         run_scripts('status',
                     status,
                     am_url,
