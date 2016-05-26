@@ -91,5 +91,5 @@ def _call_url_json(url, params,method):
 if __name__ == '__main__':
     status_info = sys.argv[1]
     url = sys.argv[2]
-    params = sys.argv[3]
-    main(status_infos,url,params)
+    params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
+    main(status_info,url,params)
