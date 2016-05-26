@@ -428,6 +428,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
             return 1
         status = status_info.get('status')
         current_unit.status = status
+        transfer_path = status_info['path']
 
     # If processing, exit
     if status == 'PROCESSING':
@@ -453,15 +454,16 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         session.commit()
         os.remove(pid_file)
         return 0
+    else:
+        run_scripts('status',
+                    status,
+                    am_url,
+                    user,
+                    api_key,
+                    transfer_path,
+                    unit_uuid
+                    )
     # If failed, rejected, completed etc, start new transfer
-    run_scripts('status',
-                status,
-                am_url,
-                user,
-                api_key,
-                status_info['path'],
-                status_info['uuid']
-                )
 
     if current_unit:
         current_unit.current = False
