@@ -106,11 +106,9 @@ def _call_url_json(url, params, method):
     """
     # LOGGER.debug('URL: %s; params: %s;', url, params)
     if method == 'get':
-        response = requests.get(url, data=json.dumps(params))
+        response = requests.get(url, params=params)
     elif method == 'put':
-        print(params)
-        print('update: ' + url)
-        response = requests.put(url, params=params)
+        response = requests.put(url, data=json.dumps(params))
     # LOGGER.debug('Response: %s', response)
     if not response.ok:
         # LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
