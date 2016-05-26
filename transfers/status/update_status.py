@@ -55,7 +55,7 @@ def main(status, uuid, transfer_path, url, params):
                 status = ''
                 while _status_checker(status, count) == 'go':
                     if count > 0:
-                        time.sleep(1)
+                        time.sleep(30)
                     status, aip_location = get_aip_details(sip_uuid, url)
                     count += 1
 
@@ -115,7 +115,7 @@ def get_aip_details(uuid, url):
 def _status_checker(status, count):
     if status == "COMPLETE" or status == 'UPLOADED':
         return 'stop'
-    elif count > 1:
+    elif count > 2:
         return 'stop'
     else:
         return 'go'
