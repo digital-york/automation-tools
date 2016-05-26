@@ -81,7 +81,7 @@ def get_transfer_details(uuid, url, params):
     print(aip)
     status = aip['status']
     try:
-        sip_uuid = aip['sip_uuid']
+        sip_uuid = aip['uuid']
     except KeyError:
         sip_uuid = ''
     return (status, sip_uuid)
