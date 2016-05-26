@@ -31,12 +31,15 @@ def main(status, uuid, transfer_path, url, params):
 
         count = 0
         while _status_checker(status, count) == 'go':
+            print(count)
             if count > 0:
                 time.sleep(10)
             sip_uuid, status = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
+        print(sip_uuid)
         if status == 'COMPLETE':
+            print(count)
             status = ''
             while _status_checker(status, count) == 'go':
                 if count > 0:
@@ -44,7 +47,9 @@ def main(status, uuid, transfer_path, url, params):
                 status = get_sip_details(sip_uuid, url, params)
                 count += 1
             count = 0
+            print(status)
             if status == 'COMPLETE':
+                print(count)
                 status = ''
                 while _status_checker(status, count) == 'go':
                     if count > 0:
@@ -74,11 +79,15 @@ def get_transfer_details(uuid, url, params):
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
     sip_uuid = aip['uuid']
+    print('printing aip')
+    print('aip')
     return (status, sip_uuid)
 
 def get_sip_details(uuid, url, params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
+    print('printing aip 2')
+    print('aip')
     status = aip['status']
     return status
 
@@ -88,7 +97,7 @@ def get_aip_details(uuid, url):
     get_url = url + ':8000/api/v2/search/package/'
     params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
-    print('printing aip')
+    print('printing aip 3')
     print(aip)
     aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
@@ -136,5 +145,6 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
+    # why does it take so long to run this?
 
 main(status, uuid, transfer_path, url, params)
