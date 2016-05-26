@@ -45,11 +45,23 @@ def main(status, uuid, transfer_path, url, params):
 
 # do something on failure
 
-def get_aip_details(sip_uuid, url):
+def get_transfer_details(uuid, url,params):
+    get_url = url + '/api/transfer/status/' + uuid + '/'
+    aip = _call_url_json(get_url, params, 'get')
+    status = aip['status']
+    return status
+
+def get_sip_details(uuid, url,params):
+    get_url = url + '/api/ingest/status/' + uuid + '/'
+    aip = _call_url_json(get_url, params, 'get')
+    status = aip['status']
+    return status
+
+def get_aip_details(uuid, url):
     # extract aip info
     # results-uuid, status, current_path, size
     get_url = url + ':8000/api/v2/search/package/'
-    params = {'uuid': sip_uuid}
+    params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
     aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
@@ -57,7 +69,7 @@ def get_aip_details(sip_uuid, url):
 
 
 def _status_checker(status, count):
-    if status == 'UPLOADED':
+    if status == "COMPLETE" or status == 'UPLOADED':
         return 'stop'
     elif count > 4:
         return 'stop'

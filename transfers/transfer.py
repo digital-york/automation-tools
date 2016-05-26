@@ -335,6 +335,15 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
             session.add(new_transfer)
             break
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
+        LOGGER.info('Finished %s', target)
+        run_scripts('status',
+                'APPROVED',
+                am_url,
+                user_name,
+                api_key,
+                target,
+                result
+                )
     else:
         # JA RUN SCRIPTS to add 'NOT APPROVED' status
         # JA RUN SCRIPTS to send an email
@@ -350,7 +359,6 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         session.add(new_transfer)
         return None
 
-    LOGGER.info('Finished %s', target)
     return new_transfer
 
 
@@ -456,14 +464,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         os.remove(pid_file)
         return 0
     # If failed, rejected, completed etc, start new transfer
-    run_scripts('status',
-                status,
-                am_url,
-                user,
-                api_key,
-                transfer_path,
-                unit_uuid
-                )
     if current_unit:
         current_unit.current = False
     new_transfer = start_transfer(ss_url, ts_uuid, ts_path, depth, am_url, user, api_key, transfer_type, see_files,
