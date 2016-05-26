@@ -46,6 +46,7 @@ def main(status, uuid, transfer_path, url, params):
 
         if status == 'FAIL':
         # send email???
+            print('fail')
 
         hydra_params = {"aip": {
             "aip_uuid": uuid,
