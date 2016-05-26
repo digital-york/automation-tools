@@ -54,7 +54,7 @@ def main(status, uuid, transfer_path, url, params):
                 while _status_checker(status, count) == 'go':
                     if count > 0:
                         time.sleep(10)
-                    status, aip_location = get_aip_details(sip_uuid, url, params)
+                    status, aip_location = get_aip_details(sip_uuid, url)
                     count += 1
 
         if status == 'FAIL':
