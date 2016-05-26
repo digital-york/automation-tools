@@ -11,7 +11,6 @@ def main(status, uuid, transfer_path, url, params):
     # call my update url
     # add these to config
 
-
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
             "status": status,
@@ -49,11 +48,15 @@ def main(status, uuid, transfer_path, url, params):
         # send email???
             print('fail')
 
+        print(uuid)
+        print(aip_location)
+        print(status)
+
         hydra_params = {"aip": {
             "aip_uuid": uuid,
             "status": status,
             "aip_location": status,
-            "api-key": params['api_key'],
+            "api-key": params['api_key']
         }
         }
     update = _call_url_json(hydra_url, hydra_params, 'put')
