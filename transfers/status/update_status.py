@@ -3,6 +3,7 @@
 from __future__ import print_function
 import sys
 import requests
+import time
 
 
 def main(status, uuid, transfer_path, url, params):
@@ -25,24 +26,23 @@ def main(status, uuid, transfer_path, url, params):
         count = 0
         while _status_checker(status, count) == 'go':
             if count > 0:
-                # wait 1minute
-                print('wait')
+                time.sleep(10)
             sip_uuid, status = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
-        while _status_checker(status, count) == 'go':
-            if count > 0:
-                # wait 1minute
-                print('wait')
-            status = get_sip_details(sip_uuid, url, params)
-            count += 1
-        count = 0
-        while _status_checker(status, count) == 'go':
-            if count > 0:
-                # wait 1minute
-                print('wait')
-            status, aip_location = get_aip_details(sip_uuid, url, params)
-            count += 1
+        if status == 'COMPLETE':
+            while _status_checker(status, count) == 'go':
+                if count > 0:
+                    time.sleep(10)
+                status = get_sip_details(sip_uuid, url, params)
+                count += 1
+            count = 0
+            if status == 'COMPLETE':
+                while _status_checker(status, count) == 'go':
+                    if count > 0:
+                        time.sleep(10)
+                    status, aip_location = get_aip_details(sip_uuid, url, params)
+                    count += 1
 
         if status == 'FAIL':
         # send email???
@@ -65,17 +65,14 @@ def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
-    print(aip)
-    #sip_uuid = aip['sip_uuid']
-    return (status, 'sip')
-
+    sip_uuid = aip['uuid']
+    return (status, sip_uuid)
 
 def get_sip_details(uuid, url, params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
     return status
-
 
 def get_aip_details(uuid, url):
     # extract aip info
