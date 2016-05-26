@@ -77,11 +77,11 @@ def main(status, uuid, transfer_path, url, params):
 def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
-    status = aip['status']
-    #sip_uuid = aip['sip_uuid']
     print('printing aip')
     print(aip)
-    return (status, '')
+    status = aip['status']
+    sip_uuid = aip['sip_uuid']
+    return (status, sip_uuid)
 
 def get_sip_details(uuid, url, params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
