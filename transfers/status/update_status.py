@@ -25,24 +25,23 @@ def main(status, uuid, transfer_path, url, params):
         count = 0
         while _status_checker(status, count) == 'go':
             if count > 0:
-            # wait 1minute
-            report = get_transfer_details(uuid, url, params)
-            sip_uuid = report[1]
-            status = report[0]
+                # wait 1minute
+                print('wait')
+            sip_uuid, status = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
         while _status_checker(status, count) == 'go':
             if count > 0:
-            # wait 1minute
+                # wait 1minute
+                print('wait')
             status = get_sip_details(sip_uuid, url, params)
             count += 1
         count = 0
         while _status_checker(status, count) == 'go':
             if count > 0:
-            # wait 1minute
-            status,aip_location = get_aip_details(sip_uuid, url, params)
-            aip_location = report[1]
-            status = report[0]
+                # wait 1minute
+                print('wait')
+            status, aip_location = get_aip_details(sip_uuid, url, params)
             count += 1
 
         if status == 'FAIL':
@@ -65,7 +64,7 @@ def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
-    sip_uuid = aip['sip_uuid']a
+    sip_uuid = aip['sip_uuid']
     return (status, sip_uuid)
 
 
