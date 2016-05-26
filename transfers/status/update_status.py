@@ -38,7 +38,7 @@ def main(status, uuid, transfer_path, url, params):
         while _status_checker(status, count) == 'go':
             if count > 0:
             # wait 1minute
-            status, aip_location = get_aip_details(sip_uuid, url, params)
+            status,aip_location = get_aip_details(sip_uuid, url, params)
             count += 1
 
         if status == 'FAIL':
@@ -57,18 +57,20 @@ def main(status, uuid, transfer_path, url, params):
 
 # do something on failure
 
-def get_transfer_details(uuid, url,params):
+def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
-    sip_uuid = aip['sip_uuid']
-    return status, sip_uuid
+    sip_uuid = aip['sip_uuid']a
+    return (status, sip_uuid)
 
-def get_sip_details(uuid, url,params):
+
+def get_sip_details(uuid, url, params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
     return status
+
 
 def get_aip_details(uuid, url):
     # extract aip info
