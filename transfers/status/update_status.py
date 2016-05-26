@@ -81,13 +81,14 @@ def get_transfer_details(uuid, url, params):
     print(aip)
     status = aip['status']
     try:
-        sip_uuid = aip['uuid']
+        sip_uuid = aip['sip_uuid']
     except KeyError:
         sip_uuid = ''
     return (status, sip_uuid)
 
-def get_sip_details(uuid, url, params):
-    get_url = url + '/api/ingest/status/' + uuid + '/'
+def get_sip_details(sip_uuid, url, params):
+    print(sip_uuid)
+    get_url = url + '/api/ingest/status/' + sip_uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     print('printing aip 2')
     print(aip)
