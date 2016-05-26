@@ -26,7 +26,9 @@ def main(status, uuid, transfer_path, url, params):
         while _status_checker(status, count) == 'go':
             if count > 0:
             # wait 1minute
-            sip_uuid,status = get_transfer_details(uuid, url, params)
+            report = get_transfer_details(uuid, url, params)
+            sip_uuid = report[1]
+            status = report[0]
             count += 1
         count = 0
         while _status_checker(status, count) == 'go':
@@ -39,6 +41,8 @@ def main(status, uuid, transfer_path, url, params):
             if count > 0:
             # wait 1minute
             status,aip_location = get_aip_details(sip_uuid, url, params)
+            aip_location = report[1]
+            status = report[0]
             count += 1
 
         if status == 'FAIL':
