@@ -408,6 +408,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
 
     # Check status of last unit
     current_unit = None
+    status_info = None
     try:
         current_unit = session.query(Unit).filter_by(current=True).one()
         unit_uuid = current_unit.uuid
@@ -428,6 +429,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
             return 1
         status = status_info.get('status')
         current_unit.status = status
+
     # If processing, exit
     if status == 'PROCESSING':
         LOGGER.info('Current transfer still processing, nothing to do.')
