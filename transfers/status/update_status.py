@@ -53,7 +53,7 @@ def get_aip_details(sip_uuid, url):
     aip = _call_url_json(get_url, params, 'get')
     aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
-    return status, aip_location
+    return (status, aip_location)
 
 
 def _status_checker(status, count):
