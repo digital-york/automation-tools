@@ -26,7 +26,19 @@ def main(status, uuid, transfer_path, url, params):
         while _status_checker(status, count) == 'go':
             if count > 0:
             # wait 1minute
-            status, aip_location = get_aip_details(uuid, url, params, 'put')
+            sip_uuid,status = get_transfer_details(uuid, url, params)
+            count += 1
+        count = 0
+        while _status_checker(status, count) == 'go':
+            if count > 0:
+            # wait 1minute
+            status = get_sip_details(sip_uuid, url, params)
+            count += 1
+        count = 0
+        while _status_checker(status, count) == 'go':
+            if count > 0:
+            # wait 1minute
+            status, aip_location = get_aip_details(sip_uuid, url, params)
             count += 1
 
         if status == 'FAIL':
@@ -39,7 +51,7 @@ def main(status, uuid, transfer_path, url, params):
             "api-key": params['api_key'],
         }
         }
-    update = _call_url_json(hydra_url, hydra_params)
+    update = _call_url_json(hydra_url, hydra_params, 'put')
     if update == None:
 
 
@@ -49,7 +61,8 @@ def get_transfer_details(uuid, url,params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
-    return status
+    sip_uuid = aip['sip_uuid']
+    return status, sip_uuid
 
 def get_sip_details(uuid, url,params):
     get_url = url + '/api/ingest/status/' + uuid + '/'
