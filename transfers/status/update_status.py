@@ -12,8 +12,9 @@ def main(status, uuid, transfer_path, url, params):
     # add these to config
 
     print("I have been called!!!")
-    print(transfer_path)
+    print(transfer_path)s
     print(uuid)
+    print(status)
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -22,6 +23,7 @@ def main(status, uuid, transfer_path, url, params):
         }
         }
     else:
+        print('here')
         # type and name - not needed, can we assume type is SIP?
 
         aip_object = transfer_path.split('/')[1]
