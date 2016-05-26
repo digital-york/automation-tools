@@ -57,7 +57,7 @@ def main(status, uuid, transfer_path, url, params):
         }
     update = _call_url_json(hydra_url, hydra_params, 'put')
     if update == None:
-
+        print('none')
 
 # do something on failure
 
