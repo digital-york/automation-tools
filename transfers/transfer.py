@@ -30,6 +30,7 @@ except ImportError:
         else:
             raise TypeError("expect bytes or str, not %s" % type(filename).__name__)
 
+
     def fsdecode(filename):
         encoding = sys.getfilesystemencoding()
         if isinstance(filename, unicode):
@@ -82,7 +83,6 @@ CONFIG = {
 logging.config.dictConfig(CONFIG)
 
 
-
 def _call_url_json(url, params):
     """
     Helper to GET a URL where the expected response is 200 with JSON.
@@ -128,7 +128,8 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         LOGGER.debug('Response: %s', response)
 
     # If Transfer is complete, get the SIP's status
-    if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info['sip_uuid'] != 'BACKLOG':
+    if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info[
+        'sip_uuid'] != 'BACKLOG':
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
         # Update DB to refer to this one
         db_unit = session.query(Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
@@ -163,13 +164,15 @@ def get_accession_id(dirname):
     # JA pull the uuid from metadata.json
     script_path = os.path.join(THIS_DIR, 'get-accession-number')
     try:
-        p = subprocess.Popen([script_path, dirname], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([script_path, dirname], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
     except FileNotFoundError:
         LOGGER.info('%s does not exist.', script_path)
         return None
     output, err = p.communicate()
     if p.returncode != 0:
-        LOGGER.info('Error running %s %s: RC: %s; stdout: %s; stderr: %s', script_path, dirname, p.returncode, output, err)
+        LOGGER.info('Error running %s %s: RC: %s; stdout: %s; stderr: %s', script_path, dirname, p.returncode, output,
+                    err)
         return None
     output = fsdecode(output)
     try:
@@ -260,7 +263,8 @@ def get_next_transfer(ss_url, ts_location_uuid, path_prefix, depth, completed, s
     return None
 
 
-def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, api_key, transfer_type, see_files, session):
+def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, api_key, transfer_type, see_files,
+                   session):
     """
     Starts a new transfer.
 
@@ -314,9 +318,9 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
     # Run all scripts in pre-transfer directory
     # TODO what inputs do we want?
     run_scripts('pre-transfer',
-        resp_json['path'],  # Absolute path
-        'standard',  # Transfer type
-    )
+                resp_json['path'],  # Absolute path
+                'standard',  # Transfer type
+                )
 
     # Approve transfer
     LOGGER.info("Ready to start")
@@ -339,7 +343,7 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
                     url,
                     user_name,
                     api_key,
-                    None, None
+                    '',''
                     )
         LOGGER.warning('Not approved')
         new_transfer = Unit(uuid=None, path=target, unit_type='transfer', current=False)
@@ -383,6 +387,7 @@ def approve_transfer(directory_name, url, api_key, user_name):
     else:
         return None
 
+
 def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False):
     LOGGER.info("Waking up")
     session = Session()
@@ -393,7 +398,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         # Open PID file only if it doesn't exist for read/write
         f = os.fdopen(os.open(pid_file, os.O_CREAT | os.O_EXCL | os.O_RDWR), 'r+')
     except:
-        LOGGER.info('This script is already running. To override this behaviour and start a new run, remove %s', pid_file)
+        LOGGER.info('This script is already running. To override this behaviour and start a new run, remove %s',
+                    pid_file)
         return 0
     else:
         pid = os.getpid()
@@ -434,13 +440,14 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         # TODO What inputs do we want?
         microservice = status_info.get('microservice', '')
         run_scripts('user-input',
-            microservice,  # Current microservice name
-            str(microservice != current_unit.microservice),  # String True or False if this is the first time at this wait point
-            status_info['path'],  # Absolute path
-            status_info['uuid'],  # SIP/Transfer UUID
-            status_info['name'],  # SIP/Transfer name
-            status_info['type'],  # SIP or transfer
-        )
+                    microservice,  # Current microservice name
+                    str(microservice != current_unit.microservice),
+                    # String True or False if this is the first time at this wait point
+                    status_info['path'],  # Absolute path
+                    status_info['uuid'],  # SIP/Transfer UUID
+                    status_info['name'],  # SIP/Transfer name
+                    status_info['type'],  # SIP or transfer
+                    )
         current_unit.microservice = microservice
         session.commit()
         os.remove(pid_file)
@@ -458,7 +465,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
 
     if current_unit:
         current_unit.current = False
-    new_transfer = start_transfer(ss_url, ts_uuid, ts_path, depth, am_url, user, api_key, transfer_type, see_files, session)
+    new_transfer = start_transfer(ss_url, ts_uuid, ts_path, depth, am_url, user, api_key, transfer_type, see_files,
+                                  session)
 
     session.commit()
     os.remove(pid_file)
@@ -467,16 +475,26 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-u', '--user', metavar='USERNAME', required=True, help='Username of the dashboard user to authenticate as.')
+    parser.add_argument('-u', '--user', metavar='USERNAME', required=True,
+                        help='Username of the dashboard user to authenticate as.')
     parser.add_argument('-k', '--api-key', metavar='KEY', required=True, help='API key of the dashboard user.')
-    parser.add_argument('-t', '--transfer-source', metavar='UUID', required=True, help='Transfer Source Location UUID to fetch transfers from.')
-    parser.add_argument('--transfer-path', metavar='PATH', help='Relative path within the Transfer Source. Default: ""', type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
-    parser.add_argument('--depth', '-d', help='Depth to create the transfers from relative to the transfer source location and path. Default of 1 creates transfers from the children of transfer-path.', type=int, default=1)
-    parser.add_argument('--am-url', '-a', metavar='URL', help='Archivematica URL. Default: http://127.0.0.1', default='http://127.0.0.1')
-    parser.add_argument('--ss-url', '-s', metavar='URL', help='Storage Service URL. Default: http://127.0.0.1:8000', default='http://127.0.0.1:8000')
-    parser.add_argument('--transfer-type', metavar='TYPE', help="Type of transfer to start. One of: 'standard' (default), 'unzipped bag', 'zipped bag', 'dspace'.", default='standard', choices=['standard', 'unzipped bag', 'zipped bag', 'dspace'])
+    parser.add_argument('-t', '--transfer-source', metavar='UUID', required=True,
+                        help='Transfer Source Location UUID to fetch transfers from.')
+    parser.add_argument('--transfer-path', metavar='PATH', help='Relative path within the Transfer Source. Default: ""',
+                        type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
+    parser.add_argument('--depth', '-d',
+                        help='Depth to create the transfers from relative to the transfer source location and path. Default of 1 creates transfers from the children of transfer-path.',
+                        type=int, default=1)
+    parser.add_argument('--am-url', '-a', metavar='URL', help='Archivematica URL. Default: http://127.0.0.1',
+                        default='http://127.0.0.1')
+    parser.add_argument('--ss-url', '-s', metavar='URL', help='Storage Service URL. Default: http://127.0.0.1:8000',
+                        default='http://127.0.0.1:8000')
+    parser.add_argument('--transfer-type', metavar='TYPE',
+                        help="Type of transfer to start. One of: 'standard' (default), 'unzipped bag', 'zipped bag', 'dspace'.",
+                        default='standard', choices=['standard', 'unzipped bag', 'zipped bag', 'dspace'])
     parser.add_argument('--files', action='store_true', help='If set, start transfers from files as well as folders.')
-    parser.add_argument('--hide', action='store_true', help='If set, hide the Transfers and SIPs in the dashboard once they complete.')
+    parser.add_argument('--hide', action='store_true',
+                        help='If set, hide the Transfers and SIPs in the dashboard once they complete.')
     args = parser.parse_args()
 
     sys.exit(main(
