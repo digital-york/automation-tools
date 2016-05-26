@@ -12,7 +12,7 @@ def main(status, uuid, transfer_path, url, params):
     # add these to config
 
     print("I have been called!!!")
-    print(transfer_path)s
+    print(transfer_path)
     print(uuid)
     print(status)
 
