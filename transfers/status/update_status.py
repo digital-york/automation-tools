@@ -28,12 +28,14 @@ def main(status, uuid, transfer_path, url, params):
 
         aip_object = transfer_path.split('/')[1]
         hydra_url = 'http://10.0.2.2:3000/api/v1/aip/' + aip_object
+        aip_location = ''
+        sip_uuid = ''
 
         count = 0
         while _status_checker(status, count) == 'go':
             print(count)
             if count > 0:
-                time.sleep(10)
+                time.sleep(30)
             status,sip_uuid = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
@@ -43,7 +45,7 @@ def main(status, uuid, transfer_path, url, params):
             status = ''
             while _status_checker(status, count) == 'go':
                 if count > 0:
-                    time.sleep(10)
+                    time.sleep(30)
                 status = get_sip_details(sip_uuid, url, params)
                 count += 1
             count = 0
@@ -53,7 +55,7 @@ def main(status, uuid, transfer_path, url, params):
                 status = ''
                 while _status_checker(status, count) == 'go':
                     if count > 0:
-                        time.sleep(10)
+                        time.sleep(1)
                     status, aip_location = get_aip_details(sip_uuid, url)
                     count += 1
 
@@ -62,15 +64,17 @@ def main(status, uuid, transfer_path, url, params):
             print('fail')
 
         hydra_params = {"aip": {
-            "aip_uuid": uuid,
+            "aip_uuid": sip_uuid,
             "status": status,
-            "aip_location": status,
+            "aip_location": aip_location,
             "api-key": params['api_key']
         }
         }
     update = _call_url_json(hydra_url, hydra_params, 'put')
     if update == None:
         print('none')
+    else:
+        print(update)
 
 # do something on failure
 
@@ -103,15 +107,15 @@ def get_aip_details(uuid, url):
     aip = _call_url_json(get_url, params, 'get')
     print('printing aip 3')
     print(aip)
-    aip_location = aip['results'][0]['current_path']
     status = aip['results'][0]['status']
+    aip_location = aip['results'][0]['current_path']
     return (status, aip_location)
 
 
 def _status_checker(status, count):
     if status == "COMPLETE" or status == 'UPLOADED':
         return 'stop'
-    elif count > 4:
+    elif count > 1:
         return 'stop'
     else:
         return 'go'
