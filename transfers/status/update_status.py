@@ -21,7 +21,7 @@ def main(status, uuid, transfer_path, url, params):
         # type and name - not needed, can we assume type is SIP?
 
         aip_object = transfer_path.split('/')[1]
-        hydra_url = 'localhost:3000/api/v1/aip/' + aip_object
+        hydra_url = 'http://localhost:3000/api/v1/aip/' + aip_object
 
         count = 0
         while _status_checker(status, count) == 'go':
