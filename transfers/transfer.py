@@ -337,7 +337,9 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         run_scripts('status',
                     'NOT APPROVED',
                     url,
-                    params
+                    user_name,
+                    api_key,
+                    None, None
                     )
         LOGGER.warning('Not approved')
         new_transfer = Unit(uuid=None, path=target, unit_type='transfer', current=False)
@@ -445,7 +447,14 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         return 0
     # If failed, rejected, completed etc, start new transfer
     else:
-        run_scripts('status',status_info, am_url, user, api_key)
+        run_scripts('status',
+                    status,
+                    am_url,
+                    user,
+                    api_key,
+                    status_info['path'],
+                    status_info['uuid']
+                    )
 
     if current_unit:
         current_unit.current = False

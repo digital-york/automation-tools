@@ -4,25 +4,22 @@ from __future__ import print_function
 import sys
 import requests
 
-def main(status,status_info):
+def main(status,uuid,transfer_path,url,params):
     # call my update url
     # add these to config
-    hydra_url = 'localhost:3000/api/v1/aip/' + aip_object
 
-    if status_info == 'NOT APPROVED':
-        status = 'NOT APPROVED'
+
+    if status == 'NOT APPROVED':
         hydra_params = {"aip": {
             "status": status,
             "api-key": params['api_key'],
             }
         }
     else:
-        transfer_path = status_info['path'],  # Absolute path
-        uuid = status_info['uuid'],  # SIP/Transfer UUID
-        status = status_info.get('status'),  # status
         # type and name - not needed, can we assume type is SIP?
 
         aip_object = transfer_path.split('/')[1]
+        hydra_url = 'localhost:3000/api/v1/aip/' + aip_object
 
         count = 0
         while _status_checker(status,count) == 'go':
@@ -89,7 +86,10 @@ def _call_url_json(url, params,method):
         return None
 
 if __name__ == '__main__':
-    status_info = sys.argv[1]
+    status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
-    main(status_info,url,params)
+    transfer_path = sys.argv[5]
+    uuid = sys.argv[6]
+
+main(status,uuid,transfer_path,url,params)
