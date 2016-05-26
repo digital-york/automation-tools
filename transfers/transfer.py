@@ -408,7 +408,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
 
     # Check status of last unit
     current_unit = None
-    status_info = None
     try:
         current_unit = session.query(Unit).filter_by(current=True).one()
         unit_uuid = current_unit.uuid
@@ -455,15 +454,14 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         os.remove(pid_file)
         return 0
     # If failed, rejected, completed etc, start new transfer
-    else:
-        run_scripts('status',
-                    status,
-                    am_url,
-                    user,
-                    api_key,
-                    status_info['path'],
-                    status_info['uuid']
-                    )
+    run_scripts('status',
+                status,
+                am_url,
+                user,
+                api_key,
+                status_info['path'],
+                status_info['uuid']
+                )
 
     if current_unit:
         current_unit.current = False
