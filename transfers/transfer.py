@@ -129,7 +129,6 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
 
     # If Transfer is complete, get the SIP's status
     if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info['sip_uuid'] != 'BACKLOG':
-        # RUN status script here
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
         # Update DB to refer to this one
         db_unit = session.query(Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
@@ -161,6 +160,7 @@ def get_accession_id(dirname):
     :param str dirname: Directory name of folder to become transfer
     :returns: accession number or None.
     """
+    # JA pull the uuid from metadata.json
     script_path = os.path.join(THIS_DIR, 'get-accession-number')
     try:
         p = subprocess.Popen([script_path, dirname], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -327,22 +327,18 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
         if result:
             LOGGER.info('Approved %s', result)
             new_transfer = Unit(uuid=result, path=target, unit_type='transfer', current=True)
-            run_scripts('status',
-                        target,
-                        result
-                        )
             LOGGER.info('New transfer: %s', new_transfer)
             session.add(new_transfer)
             break
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
     else:
-        # RUN SCRIPTS HERE to add 'failed to approve' status
+        # JA RUN SCRIPTS to add 'NOT APPROVED' status
+        # JA RUN SCRIPTS to send an email
         run_scripts('status',
-                    target,
-                    'Not approved'
+                    'NOT APPROVED',
+                    url,
+                    params
                     )
-        # How do I get the transfer path here?
-        # Send an email?
         LOGGER.warning('Not approved')
         new_transfer = Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)
@@ -448,6 +444,9 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         os.remove(pid_file)
         return 0
     # If failed, rejected, completed etc, start new transfer
+    else:
+        run_scripts('status',status_info, url, params)
+
     if current_unit:
         current_unit.current = False
     new_transfer = start_transfer(ss_url, ts_uuid, ts_path, depth, am_url, user, api_key, transfer_type, see_files, session)

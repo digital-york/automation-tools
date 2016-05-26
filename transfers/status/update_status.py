@@ -1,24 +1,95 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import os
-import shutil
 import sys
+import requests
 
-def main(transfer_path,sip_uuid):
+def main(status,status_info):
+    # call my update url
+    # add these to config
+    hydra_url = 'localhost:3000/api/v1/aip/' + aip_object
 
-    print(sip_uuid)
-    # split at '/'
-    # call localhost:3000/deposit/[1]
-    # post aip_id, sip_uuid
-    print(transfer_path)
-    # call archivematica api to get aip_uuid
-    # call archivematica api to get status
+    if status_info == 'NOT APPROVED':
+        status = 'NOT APPROVED'
+        hydra_params = {"aip": {
+            "status": status,
+            "api-key": params['api_key'],
+            }
+        }
+    else:
+        transfer_path = status_info['path'],  # Absolute path
+        uuid = status_info['uuid'],  # SIP/Transfer UUID
+        status = status_info.get('status'),  # status
+        # type and name - not needed, can we assume type is SIP?
 
-    print('http://192.168.168.192/api/transfer/status/' + sip_uuid + '/?username=geekscruff&api_key=66f63aa9f4d9c005e8920c588267f126c0d53bff')
-    #
+        aip_object = transfer_path.split('/')[1]
+
+        count = 0
+        while _status_checker(status,count) == 'go':
+            if count > 0:
+            # wait 1minute
+            status, aip_location = get_aip_details(uuid,url,params,'put')
+            count += 1
+
+        if status == 'FAIL':
+            # send email???
+
+        hydra_params = { "aip": {
+            "aip_uuid": uuid,
+            "status": status,
+            "aip_location": status,
+            "api-key": params['api_key'],
+            }
+        }
+    update = _call_url_json(hydra_url,hydra_params)
+    if update == None:
+        # do something on failure
+
+def get_aip_details(sip_uuid,url):
+    # extract aip info
+    # results-uuid, status, current_path, size
+    get_url = url + ':8000/api/v2/search/package/'
+    params = { 'uuid':  sip_uuid}
+    aip = _call_url_json(get_url,params,'get')
+    aip_location = aip['results'][0]['current_path']
+    status = aip['results'][0]['status']
+    return status,aip_location
+
+def _status_checker(status,count):
+    if status == 'UPLOADED':
+        return 'stop'
+    elif count > 4:
+        return 'stop'
+    else:
+        return 'go'
+
+def _call_url_json(url, params,method):
+    """
+    Helper to GET a URL where the expected response is 200 with JSON.
+
+    :param str url: URL to call
+    :param dict params: Params to pass to requests.get
+    :returns: Dict of the returned JSON or None
+    """
+    # LOGGER.debug('URL: %s; params: %s;', url, params)
+    if method == 'get':
+        response = requests.get(url, params=params)
+    elif method == 'put':
+        response = requests.put(url, params=params)
+    # LOGGER.debug('Response: %s', response)
+    if not response.ok:
+        # LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
+        # LOGGER.debug('Response: %s', response.text)
+        return None
+    try:
+        return response.json()
+    except ValueError:  # JSON could not be decoded
+        print('ERROR')
+        # LOGGER.warning('Could not parse JSON from response: %s', response.text)
+        return None
 
 if __name__ == '__main__':
-    transfer_path = sys.argv[1]
-    sip_uuid = sys.argv[2]
-    main(transfer_path,sip_uuid)
+    status_info = sys.argv[1]
+    url = sys.argv[2]
+    params = sys.argv[3]
+    main(status_infos,url,params)
