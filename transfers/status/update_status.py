@@ -65,8 +65,9 @@ def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
     status = aip['status']
-    sip_uuid = aip['sip_uuid']
-    return (status, sip_uuid)
+    print(aip)
+    #sip_uuid = aip['sip_uuid']
+    return (status, 'sip')
 
 
 def get_sip_details(uuid, url, params):
