@@ -11,6 +11,10 @@ def main(status, uuid, transfer_path, url, params):
     # call my update url
     # add these to config
 
+    print("I have been called!!!")
+    print(transfer_path)
+    print(uuid)
+
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
             "status": status,
@@ -31,6 +35,7 @@ def main(status, uuid, transfer_path, url, params):
             count += 1
         count = 0
         if status == 'COMPLETE':
+            status = ''
             while _status_checker(status, count) == 'go':
                 if count > 0:
                     time.sleep(10)
@@ -38,6 +43,7 @@ def main(status, uuid, transfer_path, url, params):
                 count += 1
             count = 0
             if status == 'COMPLETE':
+                status = ''
                 while _status_checker(status, count) == 'go':
                     if count > 0:
                         time.sleep(10)
@@ -123,13 +129,10 @@ def _call_url_json(url, params, method):
 
 
 if __name__ == '__main__':
-    print(sys.argv)
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
-    print("I have been called!!!")
-    print(transfer_path)
 
 main(status, uuid, transfer_path, url, params)
