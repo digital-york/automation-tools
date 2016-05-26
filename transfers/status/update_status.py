@@ -4,6 +4,7 @@ from __future__ import print_function
 import sys
 import requests
 import time
+import json
 
 
 def main(status, uuid, transfer_path, url, params):
@@ -104,7 +105,7 @@ def _call_url_json(url, params, method):
     """
     # LOGGER.debug('URL: %s; params: %s;', url, params)
     if method == 'get':
-        response = requests.get(url, params=params)
+        response = requests.get(url, data=json.dumps(params))
     elif method == 'put':
         print(params)
         print('update: ' + url)
