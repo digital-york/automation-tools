@@ -8,12 +8,10 @@ import json
 import logging
 
 
-def main(status, uuid, transfer_path, url, params):
+def main(status, uuid, transfer_path, url, params,LOGGER):
     # call my update url
     # add these to config
 
-    print('logger')
-    LOGGER = logging.getLogger('transfer')
     LOGGER.info("I have been called!!!")
 
     if status == 'NOT APPROVED':
@@ -145,6 +143,7 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
+    LOGGER = sys.argv[7]
     # why does it take so long to run this?
 
-main(status, uuid, transfer_path, url, params)
+main(status, uuid, transfer_path, url, params,LOGGER)
