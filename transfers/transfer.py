@@ -350,8 +350,7 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
                         user_name,
                         api_key,
                         target,
-                        result,
-                        LOGGER
+                        result
                         )
             session.add(new_transfer)
             break
@@ -363,8 +362,7 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
                     url,
                     user_name,
                     api_key,
-                    '','',
-                    LOGGER
+                    '',''
                     )
         new_transfer = models.Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)
