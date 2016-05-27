@@ -9,10 +9,11 @@ import logging
 
 
 def main(status, uuid, transfer_path, url, params):
+    print('hello2')
 
-    LOGGER = logging.getLogger('transfer')
-    print(LOGGER)
-    LOGGER.info("I have been called!!!")
+    #LOGGER = logging.getLogger('transfer')
+    #print(LOGGER)
+    #LOGGER.info("I have been called!!!")
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -138,6 +139,7 @@ def _call_url_json(url, params, method):
 
 
 if __name__ == '__main__':
+    print('hello1')
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
