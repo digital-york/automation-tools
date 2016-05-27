@@ -20,12 +20,15 @@ def main(transfer_path):
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
-            if name != 'submissionDocumentation' and name != 'metadata' and name != 'processingMCP.xml':
+            if name != 'submissionDocumentation' and name != 'metadata' and name != 'processingMCP.xml' and name != 'metadata.json':
                 dest = os.path.join(transfer_path, os.path.join('objects',name))
                 shutil.move(full_name, dest)
             elif name == 'submissionDocumentation':
                 os.mkdir(os.path.join(md, 'metadata'))
-                dest_m = os.path.join(transfer_path, os.path.join('metadata', name))
+                dest_s = os.path.join(transfer_path, os.path.join('metadata', name))
+                shutil.move(full_name, dest_s)
+            elif name == 'metadata.json':
+                dest_m = os.path.join(transfer_path, name)
                 shutil.move(full_name, dest_m)
         except AttributeError as e:
             print(e)

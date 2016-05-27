@@ -67,7 +67,6 @@ def setup(config_file):
 
     # Configure logging
     default_logfile = os.path.join(THIS_DIR, 'automate-transfer.log')
-    global CONFIG
     CONFIG = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -351,8 +350,7 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
                         user_name,
                         api_key,
                         target,
-                        result,
-                        CONFIG #logging config
+                        result
                         )
             session.add(new_transfer)
             break
@@ -364,8 +362,7 @@ def start_transfer(ss_url, ts_location_uuid, ts_path, depth, am_url, user_name, 
                     url,
                     user_name,
                     api_key,
-                    '','',
-                    CONFIG #logging config
+                    '',''
                     )
         new_transfer = models.Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)

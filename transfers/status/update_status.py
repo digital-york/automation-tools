@@ -5,13 +5,8 @@ import sys
 import requests
 import time
 import json
-import logging.config
 
 def main(status, uuid, transfer_path, url, params):
-
-    LOGGER = logging.getLogger('transfer')
-
-    print('does this log to the logger?')
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -64,9 +59,9 @@ def main(status, uuid, transfer_path, url, params):
         }
     update = _call_url_json(hydra_url, hydra_params, 'put')
     if update == None:
-        print('none')
+        print('ERROR: the hydra object could not be updated. Params were: ' + hydra_params)
     else:
-        print(update)
+        print('Updated hydra object: ' + update)
 
 # do something on failure
 
@@ -121,16 +116,16 @@ def _call_url_json(url, params, method):
         response = requests.put(url, data=json.dumps(params))
     # LOGGER.debug('Response: %s', response)
     if not response.ok:
+        print('Request to %s returned %s %s', url, response.status_code, response.reason)
         # LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
         # LOGGER.debug('Response: %s', response.text)
         return None
     try:
         return response.json()
     except ValueError:  # JSON could not be decoded
-        print('ERROR')
+        print('Could not parse JSON from response: %s', response.text)
         # LOGGER.warning('Could not parse JSON from response: %s', response.text)
         return None
-
 
 if __name__ == '__main__':
     status = sys.argv[1]
@@ -138,6 +133,5 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
-    logging.config.dictConfig(sys.argv[7])
     # why does it take so long to run this?
     main(status, uuid, transfer_path, url, params)
