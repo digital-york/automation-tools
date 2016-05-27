@@ -5,8 +5,11 @@ import sys
 import requests
 import time
 import json
+import logging.config
 
 def main(status, uuid, transfer_path, url, params):
+
+    LOGGER = logging.getLogger('transfer')
 
     print('does this log to the logger?')
 
@@ -26,15 +29,12 @@ def main(status, uuid, transfer_path, url, params):
 
         count = 0
         while _status_checker(status, count) == 'go':
-            print(count)
             if count > 0:
                 time.sleep(30)
             status,sip_uuid = get_transfer_details(uuid, url, params)
             count += 1
         count = 0
-        print(sip_uuid)
         if status == 'COMPLETE':
-            print(count)
             status = ''
             while _status_checker(status, count) == 'go':
                 if count > 0:
@@ -42,7 +42,6 @@ def main(status, uuid, transfer_path, url, params):
                 status = get_sip_details(sip_uuid, url, params)
                 count += 1
             count = 0
-            print(status)
             if status == 'COMPLETE':
                 print(count)
                 status = ''
@@ -115,7 +114,7 @@ def _call_url_json(url, params, method):
     :param dict params: Params to pass to requests.get
     :returns: Dict of the returned JSON or None
     """
-    # LOGGER.debug('URL: %s; params: %s;', url, params)
+    #LOGGER.debug('URL: %s; params: %s;', url, params)
     if method == 'get':
         response = requests.get(url, params=params)
     elif method == 'put':
@@ -139,5 +138,6 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
+    logging.config.dictConfig(sys.argv[7])
     # why does it take so long to run this?
     main(status, uuid, transfer_path, url, params)
