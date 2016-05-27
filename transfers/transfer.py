@@ -18,7 +18,8 @@ import subprocess
 import sys
 import time
 
-from . import models
+# from . import models
+import models
 
 try:
     from os import fsencode, fsdecode

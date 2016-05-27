@@ -12,12 +12,9 @@ def main(status, uuid, transfer_path, url, params):
     # call my update url
     # add these to config
 
+    print('logger')
     LOGGER = logging.getLogger('transfer')
     LOGGER.info("I have been called!!!")
-
-    print(transfer_path)
-    print(uuid)
-    print(status)
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -26,7 +23,6 @@ def main(status, uuid, transfer_path, url, params):
         }
         }
     else:
-        print('here')
         # type and name - not needed, can we assume type is SIP?
 
         aip_object = transfer_path.split('/')[1]
@@ -84,8 +80,6 @@ def main(status, uuid, transfer_path, url, params):
 def get_transfer_details(uuid, url, params):
     get_url = url + '/api/transfer/status/' + uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
-    print('printing aip')
-    print(aip)
     status = aip['status']
     try:
         sip_uuid = aip['sip_uuid']
@@ -94,11 +88,8 @@ def get_transfer_details(uuid, url, params):
     return (status, sip_uuid)
 
 def get_sip_details(sip_uuid, url, params):
-    print(sip_uuid)
     get_url = url + '/api/ingest/status/' + sip_uuid + '/'
     aip = _call_url_json(get_url, params, 'get')
-    print('printing aip 2')
-    print(aip)
     status = aip['status']
     return status
 
@@ -108,8 +99,6 @@ def get_aip_details(uuid, url):
     get_url = url + ':8000/api/v2/search/package/'
     params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
-    print('printing aip 3')
-    print(aip)
     status = aip['results'][0]['status']
     aip_location = aip['results'][0]['current_path']
     return (status, aip_location)
