@@ -5,15 +5,10 @@ import sys
 import requests
 import time
 import json
-import logging
-
 
 def main(status, uuid, transfer_path, url, params):
-    print('hello2')
 
-    #LOGGER = logging.getLogger('transfer')
-    #print(LOGGER)
-    #LOGGER.info("I have been called!!!")
+    print('does this log to the logger?')
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -139,12 +134,10 @@ def _call_url_json(url, params, method):
 
 
 if __name__ == '__main__':
-    print('hello1')
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
     # why does it take so long to run this?
-
-main(status, uuid, transfer_path, url, params)
+    main(status, uuid, transfer_path, url, params)
