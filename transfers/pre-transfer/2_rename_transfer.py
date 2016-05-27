@@ -28,9 +28,10 @@ def main(transfer_path):
                 dest_s = os.path.join(transfer_path, os.path.join('metadata', name))
                 shutil.move(full_name, dest_s)
             elif name == 'metadata.json':
-                print('move metadata.json to ' + dest_m)
                 dest_m = os.path.join(transfer_path, name)
+                print('move metadata.json to ' + dest_m)
                 shutil.move(full_name, dest_m)
+                print(os.listdir(dest_m))
         except AttributeError as e:
             print(e)
         except OSError as e:
