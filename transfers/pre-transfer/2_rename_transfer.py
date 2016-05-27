@@ -28,7 +28,7 @@ def main(transfer_path):
                 dest_s = os.path.join(transfer_path, os.path.join('metadata', name))
                 shutil.move(full_name, dest_s)
             elif name == 'metadata.json':
-                dest_m = os.path.join(transfer_path, name)
+                dest_m = os.path.join(transfer_path, 'metadata')
                 print('move metadata.json to ' + dest_m)
                 shutil.move(full_name, dest_m)
                 print(os.listdir(dest_m))
