@@ -428,6 +428,14 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.write(str(pid))
         f.close()
 
+    # Check for lines without a status
+    try:
+        incomplte_units = session.query(models.Unit).filter_by(status!='COMPLETE')
+        print(incomplte_units)
+    except: Exception
+    LOGGER.debug('Nothing found')
+
+
     # Check status of last unit
     current_unit = None
     try:
