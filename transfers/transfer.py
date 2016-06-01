@@ -429,10 +429,10 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.close()
 
     # Check for lines without a status
-
     try:
         units = session.query(models.Unit)
         for i in units:
+            print(i.uuid)
             run_scripts('status',
                         'APPROVED',
                         am_url,
