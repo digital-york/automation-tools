@@ -29,7 +29,8 @@ def main(status, uuid, transfer_path, url, params,state):
                     time.sleep(30)
                 status,sip_uuid = get_transfer_details(uuid, url, params)
                 count += 1
-
+        elif state == 'ingest':
+            status = 'COMPLETE'
         count = 0
         if status == 'COMPLETE':
             status = ''
