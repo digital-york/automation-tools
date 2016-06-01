@@ -442,8 +442,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                         i.uuid,
                         True
                         )
-    except Exception:
-        LOGGER.debug('Nothing found')
+    except Exception as e:
+        LOGGER.info(e)
 
 
     # Check status of last unit
