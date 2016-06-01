@@ -6,7 +6,7 @@ import requests
 import time
 import json
 
-def main(status, uuid, transfer_path, url, params):
+def main(status, uuid, transfer_path, url, params,state):
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -20,14 +20,16 @@ def main(status, uuid, transfer_path, url, params):
         aip_object = transfer_path.split('/')[1]
         hydra_url = 'http://10.0.2.2:3000/api/v1/aip/' + aip_object
         aip_location = ''
-        sip_uuid = ''
+        sip_uuid = uuid
 
-        count = 0
-        while _status_checker(status, count) == 'go':
-            if count > 0:
-                time.sleep(30)
-            status,sip_uuid = get_transfer_details(uuid, url, params)
-            count += 1
+        if state == False:
+            count = 0
+            while _status_checker(status, count) == 'go':
+                if count > 0:
+                    time.sleep(30)
+                status,sip_uuid = get_transfer_details(uuid, url, params)
+                count += 1
+        end
         count = 0
         if status == 'COMPLETE':
             status = ''
@@ -133,5 +135,7 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
-    # why does it take so long to run this?
-    main(status, uuid, transfer_path, url, params)
+    state = False
+    if sys.argv[7]:
+        state = sys.argv[7]
+    main(status, uuid, transfer_path, url, params, state)

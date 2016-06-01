@@ -431,10 +431,17 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
     # Check for lines without a status
 
     try:
-        print('HERE I AM')
         units = session.query(models.Unit)
         for i in units:
-            print(i.uuid)
+            run_scripts('status',
+                        'APPROVED',
+                        am_url,
+                        user,
+                        api_key,
+                        i.path,
+                        i.uuid,
+                        True
+                        )
     except Exception:
         LOGGER.debug('Nothing found')
 
