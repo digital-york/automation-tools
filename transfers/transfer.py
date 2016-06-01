@@ -431,6 +431,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
     # Check for lines without a status
     try:
         units = session.query(models.Unit)
+        print('Hello I thought my script would run here')
         for i in units:
             run_scripts('status',
                         'APPROVED',
@@ -441,7 +442,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                         i.uuid,
                         True
                         )
-            print('Hello I thought my script would run here')
     except Exception:
         LOGGER.debug('Nothing found')
 
