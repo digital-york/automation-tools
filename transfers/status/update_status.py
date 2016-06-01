@@ -130,6 +130,7 @@ def _call_url_json(url, params, method):
         return None
 
 if __name__ == '__main__':
+    print('Hello')
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
