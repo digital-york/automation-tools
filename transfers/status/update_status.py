@@ -22,7 +22,7 @@ def main(status, uuid, transfer_path, url, params,state):
         aip_location = ''
         sip_uuid = uuid
 
-        if state == False:
+        if state == 'transfer':
             count = 0
             while _status_checker(status, count) == 'go':
                 if count > 0:
@@ -130,13 +130,12 @@ def _call_url_json(url, params, method):
         return None
 
 if __name__ == '__main__':
-    print('Hello')
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
-    state = False
+    state = 'transfer'
     if sys.argv[7]:
         state = sys.argv[7]
     main(status, uuid, transfer_path, url, params, state)

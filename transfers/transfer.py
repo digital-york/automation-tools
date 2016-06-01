@@ -440,7 +440,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                         api_key,
                         i.path,
                         i.uuid,
-                        True
+                        i.unit_type
                         )
     except Exception as e:
         LOGGER.info(e)
