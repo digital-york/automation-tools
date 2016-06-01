@@ -431,7 +431,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
     # Check for lines without a status
     print('HERE I AM')
     try:
-        incomplete_units = session.query(models.Unit).filter_by(status != 'COMPLETE').one()
+        incomplete_units = session.query(models.Unit).filter_by(status = 'COMPLETE').one()
         print(incomplete_units)
     except Exception:
         LOGGER.debug('Nothing found')
