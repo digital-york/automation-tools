@@ -406,7 +406,7 @@ def approve_transfer(directory_name, url, api_key, user_name):
         return None
 
 
-def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False, config_file=None):
+def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False, config_file=None, refresh_status=None):
 
     setup(config_file)
 
@@ -429,22 +429,23 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.close()
 
     # Check for lines without a status
-    try:
-        units = session.query(models.Unit)
-        print('Hello I thought my script would run here')
-        for i in units:
-            run_scripts('status',
-                        'APPROVED',
-                        am_url,
-                        user,
-                        api_key,
-                        i.path,
-                        i.uuid,
-                        i.unit_type
-                        )
-    except Exception as e:
-        LOGGER.info(e)
-
+    # NEED TO COME UP WITH SOME WAY OF ONLY RUNNING THIS IF NEEDED
+    if refresh_status != None:
+        LOGGER.error('Running a refresh status')
+        try:
+            units = session.query(models.Unit)
+            for i in units:
+                run_scripts('status',
+                            'APPROVED',
+                            am_url,
+                            user,
+                            api_key,
+                            i.path,
+                            i.uuid,
+                            i.unit_type
+                            )
+        except Exception as e:
+            LOGGER.error('ERROR: %s', e)
 
     # Check status of last unit
     current_unit = None
@@ -516,6 +517,8 @@ if __name__ == '__main__':
     parser.add_argument('--files', action='store_true', help='If set, start transfers from files as well as folders.')
     parser.add_argument('--hide', action='store_true', help='If set, hide the Transfers and SIPs in the dashboard once they complete.')
     parser.add_argument('-c', '--config-file', metavar='FILE', help='Configuration file(log/db/PID files)', default=None)
+    parser.add_argument('-r', '--refresh-status', help='To refresh status of hydra objects',
+                        default=None)
     args = parser.parse_args()
 
     sys.exit(main(
@@ -530,4 +533,5 @@ if __name__ == '__main__':
         see_files=args.files,
         hide_on_complete=args.hide,
         config_file=args.config_file,
+        refresh_status=args.refresh_status
     ))
