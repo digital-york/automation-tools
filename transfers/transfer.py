@@ -476,6 +476,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         return 0
     # If failed, rejected, completed etc, start new transfer
     if current_unit:
+        print(ts_path)
         run_scripts('status',
                     'APPROVED',
                     am_url,
