@@ -25,14 +25,13 @@ def main(transfer_path):
                 shutil.move(full_name, dest)
             elif name == 'metadata.json':
                 os.mkdir(os.path.join(md, 'metadata'))
+                #dest_m = os.path.join(transfer_path, os.path.join('metadata', 'submissionDocumentation'))
                 dest_m = os.path.join(transfer_path, 'metadata')
-                print('move metadata.json to ' + dest_m)
                 shutil.move(full_name, dest_m)
-                print(os.listdir(dest_m))
             elif name == 'submissionDocumentation':
-                os.mkdir(os.path.join(md, 'metadata'))
-                dest_s = os.path.join(transfer_path, os.path.join('metadata', name))
-                shutil.move(full_name, dest_s)
+                #os.mkdir(os.path.join(md, 'metadata'))
+                #dest_s = os.path.join(transfer_path, os.path.join('metadata', name))
+                shutil.move(full_name, dest_m)
 
         except AttributeError as e:
             print(e)
