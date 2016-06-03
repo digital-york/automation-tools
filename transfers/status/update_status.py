@@ -8,7 +8,7 @@ import json
 import os
 import shutil
 
-def main(status, uuid, transfer_path, url, params,state,ts_uuid):
+def main(status, uuid, transfer_path, url, params,state,ts_path):
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -53,12 +53,9 @@ def main(status, uuid, transfer_path, url, params,state,ts_uuid):
 
         if status == 'UPLOADED':
             if ts_uuid != None:
-                get_url = url + ':8000/api/v2/location/' + ts_uuid
-                ts = _call_url_json(get_url, params, 'get')
-                delete_path = os.path.join('/',os.path.join(ts['relative_path'],transfer_path))
-                if os.path.isdir(delete_path):
-                    print('Deleting: ' + delete_path)
-                    shutil.rmtree(delete_path)
+                delete_path = os.path.join('/',os.path.join(ts_path,transfer_path))
+                print('Deleting: ' + delete_path)
+                shutil.rmtree(delete_path)
         elif status == 'FAIL':
         # send email???
             print('fail')
@@ -151,8 +148,7 @@ if __name__ == '__main__':
     except IndexError:
         state = 'transfer'
     try:
-        ts_uuid = sys.argv[8]
-        print(sys.argv[8])
+        ts_path = sys.argv[8]
     except IndexError:
         ts_uuid = None
-    main(status, uuid, transfer_path, url, params, state,ts_uuid)
+    main(status, uuid, transfer_path, url, params, state,ts_path)

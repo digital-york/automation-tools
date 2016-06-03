@@ -428,23 +428,27 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.write(str(pid))
         f.close()
 
+    # Loop through all completed transfers
+    # If the transfer folder has not yet been deleted, call the status script
     if refresh_status != None:
-        LOGGER.info('Running a refresh status')
-        # CLEANUP IF UPLOADED - remove entry from db and delete folder
-
+        LOGGER.info('Refresh statuses')
         try:
             units = session.query(models.Unit).filter_by(status='COMPLETE')
             for i in units:
-                run_scripts('status',
-                            'APPROVED',
-                            am_url,
-                            user,
-                            api_key,
-                            i.path,
-                            i.uuid,
-                            i.unit_type,
-                            ts_uuid
-                            )
+                get_url = url + ':8000/api/v2/location/' + ts_uuid
+                ts = _call_url_json(get_url, params)
+                delete_path = os.path.join('/', os.path.join(ts['relative_path'], i.path))
+                if os.path.isdir(delete_path):
+                    run_scripts('status',
+                                'APPROVED',
+                                am_url,
+                                user,
+                                api_key,
+                                i.path,
+                                i.uuid,
+                                i.unit_type,
+                                ts['relative_path']
+                                )
         except Exception as e:
             LOGGER.error('ERROR: %s', e)
 
