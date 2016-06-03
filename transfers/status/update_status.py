@@ -52,7 +52,7 @@ def main(status, uuid, transfer_path, url, params,state,ts_uuid):
 
         if status == 'UPLOADED':
             if ts_uuid != None:
-                get_url = url + '/api/v2/location/' + ts_uuid
+                get_url = url + ':8000/api/v2/location/' + ts_uuid
                 print(get_url)
                 ts = _call_url_json(get_url, params, 'get')
                 print('now we delete: ' + os.path.join(ts['relative_path'],transfer_path))
@@ -138,7 +138,6 @@ def _call_url_json(url, params, method):
         return None
 
 if __name__ == '__main__':
-    print(sys.argv)
     status = sys.argv[1]
     url = sys.argv[2]
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
