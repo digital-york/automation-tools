@@ -434,6 +434,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
 
         try:
             units = session.query(models.Unit).filter_by(status='COMPLETE')
+            print(ts_path)
+            print('here')
             for i in units:
                 run_scripts('status',
                             'APPROVED',
