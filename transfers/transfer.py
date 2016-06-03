@@ -435,7 +435,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         try:
             units = session.query(models.Unit).filter_by(status='COMPLETE')
             for i in units:
-                get_url = url + ':8000/api/v2/location/' + ts_uuid
+                get_url = am_url + ':8000/api/v2/location/' + ts_uuid
                 ts = _call_url_json(get_url, params)
                 delete_path = os.path.join('/', os.path.join(ts['relative_path'], i.path))
                 if os.path.isdir(delete_path):
