@@ -433,7 +433,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         # CLEANUP IF UPLOADED - remove entry from db and delete folder
 
         try:
-            units = session.query(models.Unit.filter_by(status='COMPLETE'))
+            units = session.query(models.Unit).filter_by(status='COMPLETE')
             for i in units:
                 run_scripts('status',
                             'APPROVED',
