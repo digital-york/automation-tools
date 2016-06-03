@@ -5,6 +5,7 @@ import sys
 import requests
 import time
 import json
+import os
 
 def main(status, uuid, transfer_path, url, params,state,ts_path):
 
