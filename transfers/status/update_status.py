@@ -22,14 +22,14 @@ def main(status, uuid, transfer_path, url, params,state):
         aip_location = ''
         sip_uuid = uuid
 
-        if state != 'transfer' and state != 'ingest':
+        if state == 'transfer':
             count = 0
             while _status_checker(status, count) == 'go':
                 if count > 0:
                     time.sleep(30)
                 status,sip_uuid = get_transfer_details(uuid, url, params)
                 count += 1
-        else:
+        elif state == 'ingest':
             status = 'COMPLETE'
         count = 0
         if status == 'COMPLETE':
@@ -139,5 +139,5 @@ if __name__ == '__main__':
     try:
         state = sys.argv[7]
     except IndexError:
-        state = ''
+        state = 'transfer'
     main(status, uuid, transfer_path, url, params, state)
