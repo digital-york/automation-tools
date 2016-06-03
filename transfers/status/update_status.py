@@ -139,5 +139,5 @@ if __name__ == '__main__':
     try:
         state = sys.argv[7]
     except IndexError:
-        state = None
+        state = ''
     main(status, uuid, transfer_path, url, params, state)
