@@ -6,6 +6,7 @@ import requests
 import time
 import json
 import os
+import shutil
 
 def main(status, uuid, transfer_path, url, params,state,ts_uuid):
 
@@ -53,9 +54,11 @@ def main(status, uuid, transfer_path, url, params,state,ts_uuid):
         if status == 'UPLOADED':
             if ts_uuid != None:
                 get_url = url + ':8000/api/v2/location/' + ts_uuid
-                print(get_url)
                 ts = _call_url_json(get_url, params, 'get')
-                print('now we delete: ' + os.path.join(ts['relative_path'],transfer_path))
+                delete_path = os.path.join('/',os.path.join(ts['relative_path'],transfer_path))
+                if os.path.isdir(delete_path):
+                    print('Deleting: ' + delete_path)
+                    shutil.rmtree(delete_path)
         elif status == 'FAIL':
         # send email???
             print('fail')
