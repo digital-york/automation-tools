@@ -136,7 +136,8 @@ if __name__ == '__main__':
     params = {'username': sys.argv[3], 'api_key': sys.argv[4]}
     transfer_path = sys.argv[5]
     uuid = sys.argv[6]
-    state = 'transfer'
-    if sys.argv[7]:
+    try:
         state = sys.argv[7]
+    except IndexError:
+        state = 'transfer'
     main(status, uuid, transfer_path, url, params, state)
