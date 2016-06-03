@@ -6,7 +6,7 @@ import requests
 import time
 import json
 
-def main(status, uuid, transfer_path, url, params,state):
+def main(status, uuid, transfer_path, url, params,state,ts_path):
 
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
@@ -49,7 +49,10 @@ def main(status, uuid, transfer_path, url, params,state):
                     status, aip_location = get_aip_details(sip_uuid, url)
                     count += 1
 
-        if status == 'FAIL':
+        if status == 'UPLOADED':
+            if ts_path != None:
+               print('now we delete: ' + os.path.join(ts_path,transfer_path))
+        elif status == 'FAIL':
         # send email???
             print('fail')
 
@@ -140,4 +143,8 @@ if __name__ == '__main__':
         state = sys.argv[7]
     except IndexError:
         state = 'transfer'
-    main(status, uuid, transfer_path, url, params, state)
+    try:
+        ts_path = sys.argv[8]
+    except IndexError:
+        ts_path = None
+    main(status, uuid, transfer_path, url, params, state,ts_path)

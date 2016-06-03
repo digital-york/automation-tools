@@ -428,12 +428,12 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.write(str(pid))
         f.close()
 
-    # Check for lines without a status
-    # NEED TO COME UP WITH SOME WAY OF ONLY RUNNING THIS IF NEEDED
     if refresh_status != None:
         LOGGER.info('Running a refresh status')
+        # CLEANUP IF UPLOADED - remove entry from db and delete folder
+
         try:
-            units = session.query(models.Unit)
+            units = session.query(models.Unit.filter_by(status='COMPLETE'))
             for i in units:
                 run_scripts('status',
                             'APPROVED',
@@ -442,7 +442,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                             api_key,
                             i.path,
                             i.uuid,
-                            i.unit_type
+                            i.unit_type,
+                            ts_path
                             )
         except Exception as e:
             LOGGER.error('ERROR: %s', e)
