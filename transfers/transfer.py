@@ -431,7 +431,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
     # Check for lines without a status
     # NEED TO COME UP WITH SOME WAY OF ONLY RUNNING THIS IF NEEDED
     if refresh_status != None:
-        LOGGER.error('Running a refresh status')
+        LOGGER.info('Running a refresh status')
         try:
             units = session.query(models.Unit)
             for i in units:
