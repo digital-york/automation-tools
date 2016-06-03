@@ -150,5 +150,5 @@ if __name__ == '__main__':
     try:
         ts_path = sys.argv[8]
     except IndexError:
-        ts_uuid = None
+        ts_path = None
     main(status, uuid, transfer_path, url, params, state,ts_path)
