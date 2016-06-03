@@ -440,6 +440,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                 ts = _call_url_json(get_url,params)
                 delete_path = os.path.join('/', os.path.join(ts['relative_path'], i.path))
                 if os.path.isdir(delete_path):
+                    LOGGER.info('Update status for ' + i.path.split('/')[1])
                     run_scripts('status',
                                 'APPROVED',
                                 am_url,
@@ -450,6 +451,8 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                                 i.unit_type,
                                 ts['relative_path']
                                 )
+                else:
+                    LOGGER.info(delete_path + ' has been deleted')
         except Exception as e:
             LOGGER.error('ERROR: %s', e)
 
