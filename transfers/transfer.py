@@ -428,34 +428,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         f.write(str(pid))
         f.close()
 
-    # Loop through all completed transfers
-    # If the transfer folder has not yet been deleted, call the status script
-    if refresh_status != None:
-        LOGGER.info('Refresh statuses')
-        try:
-            units = session.query(models.Unit).filter_by(status='COMPLETE')
-            for i in units:
-                get_url = am_url + ':8000/api/v2/location/' + ts_uuid
-                params = {'username': user, 'api_key': api_key}
-                ts = _call_url_json(get_url,params)
-                delete_path = os.path.join('/', os.path.join(ts['relative_path'], i.path))
-                if os.path.isdir(delete_path):
-                    LOGGER.info('Update status for ' + i.path.split('/')[1])
-                    run_scripts('status',
-                                'APPROVED',
-                                am_url,
-                                user,
-                                api_key,
-                                i.path,
-                                i.uuid,
-                                i.unit_type,
-                                ts['relative_path']
-                                )
-                else:
-                    LOGGER.info('Folder at ' + delete_path + ' no longer exists')
-        except Exception as e:
-            LOGGER.error('ERROR: %s', e)
-
     # Check status of last unit
     current_unit = None
     try:
@@ -502,6 +474,34 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         session.commit()
         os.remove(pid_file)
         return 0
+    else: # If failed, rejected, completed etc loop through completed transfers
+        # If the transfer folder has not yet been deleted, call the update status script
+        if refresh_status != None:
+            LOGGER.info('Refresh statuses')
+            try:
+                units = session.query(models.Unit).filter_by(status='COMPLETE')
+                for i in units:
+                    get_url = am_url + ':8000/api/v2/location/' + ts_uuid
+                    params = {'username': user, 'api_key': api_key}
+                    ts = _call_url_json(get_url, params)
+                    delete_path = os.path.join('/', os.path.join(ts['relative_path'], i.path))
+                    if os.path.isdir(delete_path):
+                        LOGGER.info('Update status for ' + i.path.split('/')[1])
+                        run_scripts('status',
+                                    'APPROVED',
+                                    am_url,
+                                    user,
+                                    api_key,
+                                    i.path,
+                                    i.uuid,
+                                    i.unit_type,
+                                    ts['relative_path']
+                                    )
+                    else:
+                        LOGGER.info('Folder at ' + delete_path + ' no longer exists')
+            except Exception as e:
+                LOGGER.error('ERROR: %s', e)
+
     # If failed, rejected, completed etc, start new transfer
     if current_unit:
         current_unit.current = False
