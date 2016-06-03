@@ -452,7 +452,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                                 ts['relative_path']
                                 )
                 else:
-                    LOGGER.info(delete_path + ' has been deleted')
+                    LOGGER.info('Folder at ' + delete_path + ' no longer exists')
         except Exception as e:
             LOGGER.error('ERROR: %s', e)
 
