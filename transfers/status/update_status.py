@@ -146,6 +146,7 @@ if __name__ == '__main__':
         state = 'transfer'
     try:
         ts_path = sys.argv[8]
+        print(sys.argv[8])
     except IndexError:
         ts_path = None
     main(status, uuid, transfer_path, url, params, state,ts_path)
