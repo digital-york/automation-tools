@@ -10,6 +10,8 @@ import shutil
 
 def main(status, uuid, transfer_path, url, params,state,ts_path):
 
+    hydra_url = 'http://10.0.2.2:3000/api/v1/aip/' + aip_object
+
     if status == 'NOT APPROVED':
         hydra_params = {"aip": {
             "status": status,
@@ -20,7 +22,6 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
         # type and name - not needed, can we assume type is SIP?
 
         aip_object = transfer_path.split('/')[1]
-        hydra_url = 'http://10.0.2.2:3000/api/v1/aip/' + aip_object
         aip_location = ''
         sip_uuid = uuid
 
@@ -67,11 +68,11 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
             "api-key": params['api_key']
         }
         }
-        update = _call_url_json(hydra_url, hydra_params, 'put')
-        if update == None:
-            print('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
-        else:
-            print('Updated hydra object: ' + str(update))
+    update = _call_url_json(hydra_url, hydra_params, 'put')
+    if update == None:
+        print('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+    else:
+        print('Updated hydra object: ' + str(update))
 
 # do something on failure
 
