@@ -9,7 +9,7 @@ import os
 import shutil
 
 def main(status, uuid, transfer_path, url, params,state,ts_path):
-
+    aip_object = transfer_path.split('/')[1]
     hydra_url = 'http://10.0.2.2:3000/api/v1/aip/' + aip_object
 
     if status == 'NOT APPROVED':
@@ -21,7 +21,6 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
     else:
         # type and name - not needed, can we assume type is SIP?
 
-        aip_object = transfer_path.split('/')[1]
         aip_location = ''
         sip_uuid = uuid
 
