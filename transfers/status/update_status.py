@@ -67,11 +67,11 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
             "api-key": params['api_key']
         }
         }
-    update = _call_url_json(hydra_url, hydra_params, 'put')
-    if update == None:
-        print('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
-    else:
-        print('Updated hydra object: ' + str(update))
+        update = _call_url_json(hydra_url, hydra_params, 'put')
+        if update == None:
+            print('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+        else:
+            print('Updated hydra object: ' + str(update))
 
 # do something on failure
 

@@ -476,6 +476,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         return 0
     else: # If failed, rejected, completed etc loop through completed transfers
         # If the transfer folder has not yet been deleted, call the update status script
+        # TODO should not be polling all completed transfers; need a way of identifying what needs to be updated
         if refresh_status != None:
             LOGGER.info('Refresh statuses')
             try:
