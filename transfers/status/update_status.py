@@ -52,7 +52,7 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
                     count += 1
 
         if status == 'UPLOADED':
-            if ts_uuid != None:
+            if ts_path != None:
                 delete_path = os.path.join('/',os.path.join(ts_path,transfer_path))
                 print('Deleting: ' + delete_path)
                 shutil.rmtree(delete_path)
