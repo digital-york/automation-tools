@@ -500,7 +500,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         if refresh_status != None:
             LOGGER.info('Refresh statuses')
             try:
-                units = session.query(models.Unit) #.filter_by(status!='COMPLETE')
+                units = session.query(models.Unit).filter_by(status='COMPLETE')
                 for i in units:
                     get_url = am_url + ':8000/api/v2/location/' + ts_uuid
                     params = {'username': user, 'api_key': api_key}
