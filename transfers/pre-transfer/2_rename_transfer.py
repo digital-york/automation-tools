@@ -17,7 +17,8 @@ def main(transfer_path):
     os.mkdir(os.path.join(obj,'objects'))
 
     print('Arrange files and folders')
-    dest_m = os.path.join(transfer_path, os.path.join('metadata', 'submissionDocumentation'))
+    dest_m = os.path.join(transfer_path, 'metadata')
+    dest_s = os.path.join(dest_m, 'submissionDocumentation')
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
@@ -25,10 +26,9 @@ def main(transfer_path):
                 dest = os.path.join(transfer_path, os.path.join('objects',name))
                 shutil.move(full_name, dest)
             elif name == 'metadata.json':
-                os.mkdir(os.path.join(md, 'metadata'))
-                shutil.move(full_name, dest_m)
+                shutil.move(full_name, dest_s)
             elif name == 'submissionDocumentation':
-                shutil.move(full_name, dest_m)
+                shutil.move(full_name, dest_s)
 
         except AttributeError as e:
             print(e)
