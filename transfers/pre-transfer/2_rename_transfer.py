@@ -16,7 +16,7 @@ def main(transfer_path):
     # TODO check there isn't already a folder called objects, if there is rename it; ditto logs; ditto metadata
     os.mkdir(os.path.join(obj,'objects'))
     #dest_m = os.mkdir(os.path.join(md, 'metadata'))
-    dest_s = os.mkdir(os.path.join(os.path.join(md, 'metadata', 'submissionDocumentation')))
+    dest_s = os.mkdir(os.path.join(md, os.path.join('metadata', 'submissionDocumentation')))
 
     print('Arrange files and folders')
 
