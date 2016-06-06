@@ -473,6 +473,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                                 i.uuid,
                                 i.unit_type
                                 )
+                    print(i.unit_type)
             except Exception as e:
                 LOGGER.error('ERROR: %s', e)
         return 0
