@@ -17,7 +17,7 @@ def main(transfer_path):
     os.mkdir(os.path.join(obj,'objects'))
 
     print('Arrange files and folders')
-    dest_m = os.path.join(transfer_path, os.path.join('submissionDocumentation', 'metadata'))
+    dest_m = os.path.join(transfer_path, os.path.join('metadata', 'submissionDocumentation'))
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
