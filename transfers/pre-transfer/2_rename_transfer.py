@@ -15,10 +15,11 @@ def main(transfer_path):
 
     # TODO check there isn't already a folder called objects, if there is rename it; ditto logs; ditto metadata
     os.mkdir(os.path.join(obj,'objects'))
+    dest_m = os.mkdir(os.path.join(md, 'metadata'))
+    dest_s = os.mkdir(os.path.join(dest_m, 'submissionDocumentation'))
 
     print('Arrange files and folders')
-    dest_m = os.path.join(md, 'metadata')
-    dest_s = os.path.join(dest_m, 'submissionDocumentation')
+
     for name in src_files:
         full_name = os.path.join(transfer_path, name)
         try:
