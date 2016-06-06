@@ -47,6 +47,7 @@ def main(status, uuid, transfer_path, url, params,state,ts_path):
                 while _status_checker(status, count) == 'go':
                     if count > 0:
                         time.sleep(30)
+                        print('hello')
                     status, aip_location = get_aip_details(sip_uuid, url)
                     count += 1
 
