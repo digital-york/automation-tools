@@ -456,7 +456,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         session.commit()
         os.remove(pid_file)
         if refresh_status != None:
-            LOGGER.info('Refresh statuses')
+            LOGGER.info('Refresh statuses for processing')
             try:
                 units = session.query(models.Unit).filter_by(status='PROCESSING')
                 for i in units:
@@ -473,7 +473,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
                                 i.uuid,
                                 i.unit_type
                                 )
-                    print(i.unit_type)
             except Exception as e:
                 LOGGER.error('ERROR: %s', e)
         return 0
@@ -499,9 +498,9 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         # If the transfer folder has not yet been deleted, call the update status script
         # TODO should not be polling all completed transfers; need a way of identifying what needs to be updated
         if refresh_status != None:
-            LOGGER.info('Refresh statuses')
+            LOGGER.info('Refresh statuses for failed, rejected, completed')
             try:
-                units = session.query(models.Unit).filter_by(status='COMPLETE')
+                units = session.query(models.Unit) #.filter_by(status='COMPLETE')
                 for i in units:
                     get_url = am_url + ':8000/api/v2/location/' + ts_uuid
                     params = {'username': user, 'api_key': api_key}
