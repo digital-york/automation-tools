@@ -455,6 +455,26 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         LOGGER.info('Current transfer still processing, nothing to do.')
         session.commit()
         os.remove(pid_file)
+        if refresh_status != None:
+            LOGGER.info('Refresh statuses')
+            try:
+                units = session.query(models.Unit).filter_by(status='PROCESSING')
+                for i in units:
+                    get_url = am_url + ':8000/api/v2/location/' + ts_uuid
+                    params = {'username': user, 'api_key': api_key}
+                    ts = _call_url_json(get_url, params)
+                    LOGGER.info('Update status for ' + i.path.split('/')[1])
+                    run_scripts('status',
+                                'APPROVED',
+                                am_url,
+                                user,
+                                api_key,
+                                i.path,
+                                i.uuid,
+                                i.unit_type
+                                )
+            except Exception as e:
+                LOGGER.error('ERROR: %s', e)
         return 0
     # If waiting on input, send email, exit
     elif status == 'USER_INPUT':
