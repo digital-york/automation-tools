@@ -132,7 +132,7 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
             result = approve_transfer(reingest_uuid, am_url, api_key, user_name)
             # Mark as started
             if result:
-                LOGGER.info('Approved %s', result)
+                LOGGER.info('Approved %s', result.text)
                 break
             LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
         else:
