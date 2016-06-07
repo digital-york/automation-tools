@@ -93,7 +93,6 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
     get_url = url + "/api/ingest/waiting"
     params = {'username': user_name, 'api_key': api_key}
     waiting_transfers = _call_url_json(get_url, params)
-    LOGGER.debug()
     if waiting_transfers is None:
         LOGGER.warning('No waiting transfer ')
         return None
