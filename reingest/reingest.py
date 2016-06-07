@@ -30,14 +30,14 @@ def start_reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config=
     :param processing_config: Processing configuration to specify for a full reingest.
     """
     url = ss_url + '/api/v2/file/' + aip_uuid + '/reingest/'
-    ss_user = 'ss_robot'
-    ss_key = '955898585bf9a921e66ea80b125f3c697cd6fcdb'
+    #ss_user = 'ss_robot'
+    #ss_key = '955898585bf9a921e66ea80b125f3c697cd6fcdb'
     data = {
         'pipeline': pipeline,
         'reingest_type': reingest_type,
         'processing_config': processing_config,
-        'username': ss_user,
-        'api_key': ss_key
+        #'username': ss_user,
+        #'api_key': ss_key
     }
     LOGGER.debug('URL: %s; JSON body: %s', url, data)
     try:
