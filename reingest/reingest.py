@@ -123,6 +123,8 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
     if am_url and api_key and user_name:
         retry_count = 3
         for i in range(retry_count):
+            LOGGER.debug(api_key)
+            LOGGER.debug(user_name)
             result = approve_transfer(reingest_uuid, am_url, api_key, user_name)
             # Mark as started
             if result:
