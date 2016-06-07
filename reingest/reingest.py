@@ -46,6 +46,7 @@ def start_reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config=
         LOGGER.exception('Error POSTing to start reingest')
         return None
     LOGGER.debug('Response: %s', response)
+    LOGGER.debug('Response text: %s', response.text)
     if response.status_code != requests.codes.accepted:  # 202
         LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.warning('Response: %s', response.text)
@@ -68,6 +69,7 @@ def _call_url_json(url, params):
     LOGGER.debug('URL: %s; params: %s;', url, params)
     response = requests.get(url, params=params)
     LOGGER.debug('Response: %s', response)
+    LOGGER.debug('Response text: %s', response.text)
     if not response.ok:
         LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.debug('Response: %s', response.text)
@@ -132,7 +134,7 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
             result = approve_transfer(reingest_uuid, am_url, api_key, user_name)
             # Mark as started
             if result:
-                LOGGER.info('Approved %s', result.text)
+                LOGGER.info('Approved %s', result)
                 break
             LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
         else:
