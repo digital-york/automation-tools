@@ -119,7 +119,8 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
     if response is None:
         LOGGER.info('Exiting')
         return
-    reingest_uuid = response.get('reingest_uuid')
+    #reingest_uuid = response.get('reingest_uuid')
+    reingest_uuid = aip_uuid
     LOGGER.info('Reingested UUID: %s', reingest_uuid)
 
     # Approve reingest
