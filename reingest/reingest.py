@@ -37,7 +37,7 @@ def start_reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config=
         'reingest_type': reingest_type,
         'processing_config': processing_config,
         'username': ss_user,
-        'api-key': ss_key
+        'api_key': ss_key
     }
     LOGGER.debug('URL: %s; JSON body: %s', url, data)
     try:
