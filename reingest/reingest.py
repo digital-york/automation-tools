@@ -97,7 +97,7 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
         LOGGER.warning('No waiting transfer ')
         return None
     for a in waiting_transfers['results']:
-        LOGGER.debug("Found waiting transfer: %s", a['directory'])
+        LOGGER.debug("Found waiting transfer: %s", a['sip_directory'])
         if a['sip_uuid'] == unit_uuid:
             # Post to approve transfer
             #post_url = url + "/api/transfer/approve/"
