@@ -108,7 +108,7 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
             ss_params = {'username': 'ss_robot', 'api_key': '955898585bf9a921e66ea80b125f3c697cd6fcdb'}
             package_loc = _call_url_json(get_url,ss_params).text
             print(package_loc['current_full_path'])
-            params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'],'name': 'package_loc['current_full_path']'}
+            params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'],'name': package_loc['current_full_path']}
             LOGGER.debug('URL: %s; Params: %s;', post_url, params)
             r = requests.post(post_url, data=params)
             LOGGER.debug('Response: %s', r)
