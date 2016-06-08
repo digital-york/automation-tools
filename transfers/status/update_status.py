@@ -95,7 +95,7 @@ def get_aip_details(uuid, url):
     # extract aip info
     # results-uuid, status, current_path, size
     # this needs changing!!!
-    get_url = url.replace('http://','http://test@test') + ':8000/api/v2/file/' + uuid
+    get_url = url.replace('http://','http://test:test@') + ':8000/api/v2/file/' + uuid
     print(get_url)
     #params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
