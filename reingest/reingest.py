@@ -99,11 +99,12 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
     for a in waiting_transfers['results']:
         LOGGER.debug("Found waiting transfer: %s", a['sip_directory'])
         if a['sip_uuid'] == unit_uuid:
+            print(a)
             # Post to approve transfer
             #post_url = url + "/api/transfer/approve/"
             post_url = url + "/api/ingest/reingest/"
             #params = {'username': user_name, 'api_key': api_key, 'type': a['type'], 'directory': a['directory']}
-            params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'], 'name': a['sip_name']}
+            params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid']} #, 'name': a['sip_name']}
             LOGGER.debug('URL: %s; Params: %s;', post_url, params)
             r = requests.post(post_url, data=params)
             LOGGER.debug('Response: %s', r)
@@ -125,7 +126,6 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
         LOGGER.info('Exiting')
         return
     print(response)
-    print(response.text)
     #reingest_uuid = response.get('reingest_uuid')
     reingest_uuid = aip_uuid
     LOGGER.info('Reingested UUID: %s', reingest_uuid)
