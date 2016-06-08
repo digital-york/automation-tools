@@ -125,7 +125,6 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
         LOGGER.info('Exiting')
         return
     print(response)
-    print(response.code)
     print(response.text)
     #reingest_uuid = response.get('reingest_uuid')
     reingest_uuid = aip_uuid
