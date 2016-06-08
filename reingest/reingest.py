@@ -104,7 +104,7 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
             #post_url = url + "/api/transfer/approve/"
             post_url = url + "/api/ingest/reingest/"
             #params = {'username': user_name, 'api_key': api_key, 'type': a['type'], 'directory': a['directory']}
-            get_url = ss_url + '/api/v2/file/' + a['sip_uuid']
+            get_url = 'http://test:test@192.168.168.192:8000/api/v2/file/' + a['sip_uuid']
             ss_params = {'username': 'ss_robot', 'api_key': '955898585bf9a921e66ea80b125f3c697cd6fcdb'}
             package_loc = requests.get(get_url,ss_params)
             params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'], 'name': package_loc['current_full_path']}
