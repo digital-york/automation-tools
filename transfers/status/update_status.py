@@ -96,14 +96,12 @@ def get_aip_details(uuid, url):
     # results-uuid, status, current_path, size
     # this needs changing!!!
     get_url = url.replace('http://','http://test:test@') + ':8000/api/v2/file/' + uuid
-    print(get_url)
     #params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
-    print(aip)
-    #status = aip['results'][0]['status']
-    #aip_location = aip['results'][0]['current_path']
-    #return (status, aip_location)
-    return('TEST','123')
+    status = aip['status']
+    aip_location = aip['current_path']
+    return (status, aip_location)
+
 
 def _status_checker(status, count):
     if status == "COMPLETE" or status == 'UPLOADED':
