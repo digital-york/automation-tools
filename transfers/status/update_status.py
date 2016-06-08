@@ -99,6 +99,7 @@ def get_aip_details(uuid, url):
     print(get_url)
     #params = {'uuid': uuid}
     aip = _call_url_json(get_url, params, 'get')
+    print(aip)
     status = aip['results'][0]['status']
     aip_location = aip['results'][0]['current_path']
     return (status, aip_location)
