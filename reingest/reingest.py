@@ -109,7 +109,7 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
             print(package_loc['current_path'])
             params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'],'name': package_loc['current_path']}
             LOGGER.debug('URL: %s; Params: %s;', post_url, params)
-            r = requests.post(post_url, data=params)
+            r = requests.patch(post_url, data=params)
             LOGGER.debug('Response: %s', r)
             LOGGER.debug('Response text: %s', r.text)
             if r.status_code != 200:
