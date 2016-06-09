@@ -148,9 +148,9 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
         # Update DB to refer to this one
         db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
+        print(unit_info)
         db_unit.unit_type = 'ingest'
         db_unit.uuid = unit_info['sip_uuid']
-        print(unit_info)
         # Get SIP status
         url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
         unit_info = _call_url_json(url, params)
