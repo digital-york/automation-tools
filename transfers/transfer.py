@@ -134,7 +134,7 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': user, 'api_key': api_key}
     unit_info = _call_url_json(url, params)
-    print('unit_info')
+    print(unit_info)
     # If complete, hide in dashboard
     if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
         LOGGER.info('Hiding %s %s in dashboard', unit_type, unit_uuid)
