@@ -99,7 +99,6 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
     for a in waiting_transfers['results']:
         LOGGER.debug("Found waiting transfer: %s", a['sip_directory'])
         if a['sip_uuid'] == unit_uuid:
-            print(a)
             # Post to approve transfer
             #post_url = url + "/api/transfer/approve/"
             post_url = url + "/api/ingest/reingest/"
@@ -151,7 +150,7 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
             return None
     else:
         LOGGER.info('Archivematica API not information provided, cannot approve transfer.')
-    LOGGER.info('Done %s reingest of AIP %s on pipeline %s with %s config and reingest UUID of %s', reingest_type, aip_uuid, pipeline, processing_config, reingest_uuid)
+        LOGGER.info('Done %s reingest of AIP %s on pipeline %s with %s config and reingest UUID of %s', reingest_type, aip_uuid, pipeline, processing_config, reingest_uuid)
 
 
 def metadata(sip_uuid, paths, am_url, user_name, api_key):

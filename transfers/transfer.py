@@ -150,6 +150,7 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
         db_unit.unit_type = 'ingest'
         db_unit.uuid = unit_info['sip_uuid']
+        print(unit_info)
         # Get SIP status
         url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
         unit_info = _call_url_json(url, params)
