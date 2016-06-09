@@ -134,7 +134,6 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': user, 'api_key': api_key}
     unit_info = _call_url_json(url, params)
-    print(unit_info)
 
     # If complete, hide in dashboard
     if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
@@ -145,14 +144,21 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         LOGGER.debug('Response: %s', response)
 
     # If Transfer is complete, get the SIP's status
-    if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info['sip_uuid'] != 'BACKLOG':
-        LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
+    if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE':
+        try:
+            if  unit_info['sip_uuid']:
+                uuid = unit_info['sip_uuid']
+        except Exception:
+            LOGGER.info('Error when trying to get sip_uuid')
+            uuid = unit_info['uuid']
+
+        LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, uuid)
         # Update DB to refer to this one
         db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
         db_unit.unit_type = 'ingest'
-        db_unit.uuid = unit_info['sip_uuid']
+        db_unit.uuid = uuid
         # Get SIP status
-        url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
+        url = am_url + '/api/ingest/status/' + uuid + '/'
         unit_info = _call_url_json(url, params)
 
         # If complete, hide in dashboard
