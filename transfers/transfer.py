@@ -134,6 +134,7 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': user, 'api_key': api_key}
     unit_info = _call_url_json(url, params)
+    print(unit_info)
 
     # If complete, hide in dashboard
     if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
@@ -434,7 +435,6 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         current_unit = session.query(models.Unit).filter_by(current=True).one()
         unit_uuid = current_unit.uuid
         unit_type = current_unit.unit_type
-        print(current_unit)
     except Exception:
         LOGGER.debug('No current unit', exc_info=True)
         unit_uuid = unit_type = ''
