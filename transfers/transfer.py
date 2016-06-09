@@ -134,6 +134,7 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': user, 'api_key': api_key}
     unit_info = _call_url_json(url, params)
+    print(unit_info)
     # If complete, hide in dashboard
     if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
         LOGGER.info('Hiding %s %s in dashboard', unit_type, unit_uuid)
@@ -147,18 +148,17 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         try:
             if  unit_info['sip_uuid']:
                 uuid = unit_info['sip_uuid']
-        except Exception:
-            LOGGER.info('Error when trying to get sip_uuid; trying directory')
-            uuid = unit_info['directory']
 
-        LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, uuid)
-        # Update DB to refer to this one
-        db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
-        db_unit.unit_type = 'ingest'
-        db_unit.uuid = uuid
-        # Get SIP status
-        url = am_url + '/api/ingest/status/' + uuid + '/'
-        unit_info = _call_url_json(url, params)
+            LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, uuid)
+            # Update DB to refer to this one
+            db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
+            db_unit.unit_type = 'ingest'
+            db_unit.uuid = uuid
+            # Get SIP status
+            url = am_url + '/api/ingest/status/' + uuid + '/'
+            unit_info = _call_url_json(url, params)
+        except Exception:
+            LOGGER.info('Error when trying to get sip_uuid')
 
         # If complete, hide in dashboard
         if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
