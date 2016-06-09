@@ -148,7 +148,6 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, unit_info['sip_uuid'])
         # Update DB to refer to this one
         db_unit = session.query(models.Unit).filter_by(unit_type=unit_type, uuid=unit_uuid).one()
-        print(unit_info)
         db_unit.unit_type = 'ingest'
         db_unit.uuid = unit_info['sip_uuid']
         # Get SIP status
@@ -435,6 +434,7 @@ def main(user, api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, 
         current_unit = session.query(models.Unit).filter_by(current=True).one()
         unit_uuid = current_unit.uuid
         unit_type = current_unit.unit_type
+        print(current_unit)
     except Exception:
         LOGGER.debug('No current unit', exc_info=True)
         unit_uuid = unit_type = ''
