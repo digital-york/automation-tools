@@ -134,7 +134,6 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': user, 'api_key': api_key}
     unit_info = _call_url_json(url, params)
-    print(unit_info)
     # If complete, hide in dashboard
     if hide_on_complete and unit_info and unit_info['status'] == 'COMPLETE':
         LOGGER.info('Hiding %s %s in dashboard', unit_type, unit_uuid)
@@ -149,8 +148,8 @@ def get_status(am_url, user, api_key, unit_uuid, unit_type, session, hide_on_com
             if  unit_info['sip_uuid']:
                 uuid = unit_info['sip_uuid']
         except Exception:
-            LOGGER.info('Error when trying to get sip_uuid')
-            uuid = unit_info['uuid']
+            LOGGER.info('Error when trying to get sip_uuid; trying directory')
+            uuid = unit_info['directory']
 
         LOGGER.info('%s is a complete transfer, fetching SIP %s status.', unit_uuid, uuid)
         # Update DB to refer to this one
