@@ -478,8 +478,10 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-u', '--user', metavar='USERNAME', required=True, help='Username of the dashboard user to authenticate as.')
-    parser.add_argument('-k', '--api-key', metavar='KEY', required=True, help='API key of the dashboard user.')
+    parser.add_argument('-u', '--user', metavar='USERNAME', required=True, help='Username of the Archivematica dashboard user to authenticate as.')
+    parser.add_argument('-k', '--api-key', metavar='KEY', required=True, help='API key of the Archivematica dashboard user.')
+    parser.add_argument('--ss-user', metavar='USERNAME', required=True, help='Username of the Storage Service user to authenticate as.')
+    parser.add_argument('--ss-api-key', metavar='KEY', required=True, help='API key of the Storage Service user.')
     parser.add_argument('-t', '--transfer-source', metavar='UUID', required=True, help='Transfer Source Location UUID to fetch transfers from.')
     parser.add_argument('--transfer-path', metavar='PATH', help='Relative path within the Transfer Source. Default: ""', type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
     parser.add_argument('--depth', '-d', help='Depth to create the transfers from relative to the transfer source location and path. Default of 1 creates transfers from the children of transfer-path.', type=int, default=1)
