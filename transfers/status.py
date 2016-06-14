@@ -265,9 +265,6 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 
     LOGGER.info("Waking up")
 
-    # Get list of folders
-    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, '', depth)
-
     session = models.Session()
 
     # Check for evidence that this is already running
@@ -283,6 +280,9 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         pid = os.getpid()
         f.write(str(pid))
         f.close()
+
+    # Get list of folders
+    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, '', depth)
 
     try:
         units = session.query(models.Unit) #.filter_by(unit_type='PROCESSING')
