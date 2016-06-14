@@ -279,10 +279,11 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         for i in units:
             f = i.path.split('/')[1]
             if f in folders:
+                print(f)
                 if i.unit_type == 'transfer':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
-                    update_status(am_api_key,i.status,hydra_url,f)
+                    update_status(am_api_key,status_info['status'],hydra_url,f)
                 elif i.unit_type == 'ingest':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
