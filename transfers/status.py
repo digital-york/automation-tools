@@ -286,6 +286,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
                 elif i.unit_type == 'ingest':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
+                    print(status_info)
                     update_status(am_api_key, status_info['status'], hydra_url,f,status_info['uuid'],status_info['path'])
                     if status_info['status'] == 'UPLOADED':
                         delete_path = os.path.join('/', os.path.join(ts_path, i.path))
