@@ -243,7 +243,8 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         listy = []
         for e in entries:
             LOGGER.debug('New path: %s', e)
-            listy.append(get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1))
+            l = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1)
+            listy.append(l[0].split('/')[1])
         if listy != []:
             print('here I am')
             entries = listy
