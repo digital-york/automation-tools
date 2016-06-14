@@ -20,7 +20,8 @@ import time
 import json
 import shutil
 
-from . import models
+#from . import models
+import models
 
 try:
     from os import fsencode, fsdecode
