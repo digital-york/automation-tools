@@ -246,8 +246,8 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         for e in entries:
             LOGGER.debug('New path: %s', e)
             listy.append(get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1))
-            if listy != []:
-                entries = listy
+        if listy != []:
+            entries = listy
     return entries
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, hydra_url, config_file=None):
