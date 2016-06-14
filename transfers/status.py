@@ -199,7 +199,15 @@ def update_status(api_key, status, hydra_url,h_id,aip_uuid='',location=''):
     else:
         LOGGER.info('Updated hydra object: ' + str(update))
 
-
+def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
+    # extract aip info
+    # results-uuid, status, current_path, size
+    get_url = ss_url + '/api/v2/file/' + uuid
+    params = {'username': ss_user, 'api_key': ss_api_key}
+    aip = _call_url_json(get_url, params, 'get')
+    status = aip['status']
+    aip_location = aip['current_path']
+    return (status, aip_location)
 
 def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth):
     """
@@ -279,7 +287,6 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         for i in units:
             f = i.path.split('/')[1]
             if f in folders:
-                print(f)
                 if i.unit_type == 'transfer':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
@@ -287,9 +294,11 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
                 elif i.unit_type == 'ingest':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
-                    print(status_info)
                     update_status(am_api_key, status_info['status'], hydra_url,f,status_info['uuid'],status_info['path'])
-                    if status_info['status'] == 'UPLOADED':
+                    status, aip_location = get_aip_details(i.uuid,ss_url,ss_user,ss_api_key)
+                    update_status(am_api_key, status, hydra_url, f, i.uuid,
+                                  aip_location)
+                    if status == 'UPLOADED':
                         delete_path = os.path.join('/', os.path.join(ts_path, i.path))
                         LOGGER.info('Deleting: ' + delete_path)
                         shutil.rmtree(delete_path)
