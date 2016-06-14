@@ -222,6 +222,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
     if path_prefix:
         params['path'] = base64.b64encode(path_prefix)
     browse_info = _call_url_json(url, params,'get')
+    print(browse_info)
     if browse_info is None:
         return None
     entries = browse_info['directories']
