@@ -241,11 +241,12 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         return entries
     else:  # if depth > 1
         # Recurse on each directory
+        listy = []
         for e in entries:
             LOGGER.debug('New path: %s', e)
-            entries += get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth)
-            if entries:
-                return entries
+            listy.append(get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth))
+            if listy != []:
+                entries = listy
     return entries
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, hydra_url, config_file=None):
