@@ -243,7 +243,6 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         # Sort, take the first
         entries = sorted(list(entries))
         if not entries:
-            LOGGER.info("There are no folders left that need a status update.", path_prefix)
             return None
         return entries
     else:  # if depth > 1
