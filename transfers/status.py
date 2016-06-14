@@ -209,7 +209,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     aip_location = aip['current_path']
     return (status, aip_location)
 
-def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, depth):
+def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth):
     """
     Helper to find the first directory that doesn't have an associated transfer.
 
@@ -227,14 +227,15 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, dep
         'username': ss_user,
         'api_key': ss_api_key,
     }
-
+    if path_prefix:
+        params['path'] = base64.b64encode(path_prefix)
     browse_info = _call_url_json(url, params,'get')
     if browse_info is None:
         return None
     entries = browse_info['directories']
     entries = [base64.b64decode(e.encode('utf8')) for e in entries]
     LOGGER.debug('Entries: %s', entries)
-    entries = [e for e in entries]
+    entries = [os.path.join(path_prefix, e) for e in entries]
     # If at the correct depth, check if any of these have not been made into transfers yet
     if depth <= 1:
         # Find the directories that are not already in the DB using sets
@@ -242,7 +243,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, dep
         # Sort, take the first
         entries = sorted(list(entries))
         if not entries:
-            LOGGER.info("There are no folders left that need a status update.")
+            LOGGER.info("There are no folders left that need a status update.", path_prefix)
             return None
         return entries
     else:  # if depth > 1
@@ -263,7 +264,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
     LOGGER.info("Waking up")
 
     # Get list of folders
-    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, depth)
+    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, '', depth)
 
     session = models.Session()
 
