@@ -292,6 +292,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
                 print('DOING ' + f)
                 if i.unit_type == 'transfer':
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
+                    status = status_info['status']
                     status_info['status']
                     # update hydra
                     update_status(am_api_key,status,hydra_url,f)
