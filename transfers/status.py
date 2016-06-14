@@ -263,7 +263,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
     LOGGER.info("Waking up")
 
     # Get list of folders
-    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, ts_path, depth)
+    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, depth)
 
     session = models.Session()
 
