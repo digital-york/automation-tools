@@ -314,7 +314,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 
     session.commit()
     os.remove(pid_file)
-    return 1
+    return 0
 
 
 if __name__ == '__main__':
