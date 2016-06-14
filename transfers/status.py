@@ -186,12 +186,11 @@ def run_scripts(directory, *args):
             LOGGER.warning('stderr: %s', stderr)
 
 def update_status(api_key, status, hydra_url,h_id,aip_uuid='',location=''):
-    hydra_params = {"aip": {
+    hydra_params = {
         "aip_uuid": aip_uuid,
         "status": status,
         "aip_location": location,
         "api-key": api_key
-    }
     }
     update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
     if update == None:
@@ -246,9 +245,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
             l = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1)
             listy.append(l[0].split('/')[1])
         if listy != []:
-            print('here I am')
             entries = listy
-    print(entries)
     return entries
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, hydra_url, config_file=None):
