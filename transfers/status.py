@@ -139,7 +139,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
     # Get status
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': am_user, 'api_key': am_api_key}
-    unit_info = _call_url_json(url, params)
+    unit_info = _call_url_json(url, params,'get')
 
     # If Transfer is complete, get the SIP's status
     if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info['sip_uuid'] != 'BACKLOG':
@@ -150,7 +150,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
         db_unit.uuid = unit_info['sip_uuid']
         # Get SIP status
         url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
-        unit_info = _call_url_json(url, params)
+        unit_info = _call_url_json(url, params,'get')
 
     return unit_info
 
@@ -221,7 +221,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
     }
     if path_prefix:
         params['path'] = base64.b64encode(path_prefix)
-    browse_info = _call_url_json(url, params)
+    browse_info = _call_url_json(url, params,'get')
     if browse_info is None:
         return None
     entries = browse_info['directories']
