@@ -186,11 +186,12 @@ def run_scripts(directory, *args):
             LOGGER.warning('stderr: %s', stderr)
 
 def update_status(api_key, status, hydra_url,h_id,aip_uuid='',location=''):
-    hydra_params = {
+    hydra_params = {"aip": {
         "aip_uuid": aip_uuid,
         "status": status,
         "aip_location": location,
         "api-key": api_key
+    }
     }
     update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
     if update == None:
