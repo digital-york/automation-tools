@@ -8,15 +8,18 @@ import pwd
 import grp
 
 def main(transfer_path):
-    obj = transfer_path
-    log = transfer_path
-    md = transfer_path
     src_files = os.listdir(transfer_path)
 
+    print('Create folders')
+
     # TODO check there isn't already a folder called objects, if there is rename it; ditto logs; ditto metadata
-    os.mkdir(os.path.join(obj,'objects'))
-    #dest_m = os.mkdir(os.path.join(md, 'metadata'))
-    dest_s = os.mkdir(os.path.join(md, os.path.join('metadata', 'submissionDocumentation')))
+    os.mkdir("objects")
+    shutil.move("objects",transfer_path)
+    os.mkdir("metadata")
+    shutil.move("metadata",transfer_path)
+    os.mkdir("submissionDocumentation") #temporary - will always be there in transfer
+    shutil.move("submissionDocumentation",os.path.join(transfer_path,'metadata'))
+    dest_s = os.path.join(transfer_path, os.path.join('metadata','submissionDocumentation'))
 
     print('Arrange files and folders')
 
@@ -36,7 +39,8 @@ def main(transfer_path):
         except OSError as e:
             print(e)
 
-    os.mkdir(os.path.join(log, 'logs'))
+    os.mkdir('logs')
+    shutil.move('logs', transfer_path)
 
     print('Reset all file permissions to archivematica:archivematica')
 
