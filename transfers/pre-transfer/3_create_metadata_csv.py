@@ -35,6 +35,7 @@ def main(transfer_path):
     md_json = os.path.join(transfer_path, os.path.join('metadata', os.path.join('submissionDocumentation','metadata.json')))
     ids = transfer_path.split('/')
     md_csv['parts'] = [ids[len(ids) - 2]]
+    print(md_csv)
     # Open metadata.json
     # try this https://github.com/evidens/json2csv
 
