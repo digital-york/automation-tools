@@ -33,12 +33,8 @@ MAPPING = {
 def main(transfer_path):
     # path for metadata.json
     md_json = os.path.join(transfer_path, os.path.join('metadata', os.path.join('submissionDocumentation','metadata.json')))
-    ids = transfer_path.split('/')
-    print('hello')
-    print('transfer_path')
-    print(len(ids))
-    print(ids[len(ids) - 2])
-    md_csv = {"parts": ids[len(ids) - 2]}
+    #ids = transfer_path.split('/')
+    #md_csv = {"parts": ids[len(ids) - 2]}
     # Open metadata.json
     # try this https://github.com/evidens/json2csv
 
@@ -56,6 +52,10 @@ def main(transfer_path):
                         md_csv[mp].append(y)
                     else:
                         md_csv[mp] = [y]
+
+    md_json_name = os.path.join(transfer_path, os.path.join('metadata', 'metadata.json'))
+    with open('data.json', 'w') as fp:
+        json.dump(md_json_name, fp)
 
     # path for metadata.csv
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
@@ -79,6 +79,7 @@ def main(transfer_path):
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
     os.chown(md_csv_name, uid,gid)
+    os.chown(md_json_name, uid, gid)
 
 # Check for empty strings, lists and dicts
 def has_value(value):
