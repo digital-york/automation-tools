@@ -1,0 +1,72 @@
+[{
+  "uuid":"14dfd1eb-0080-4e05-80a8-c605447dcb82", # dc.identifier
+  "created":"2016-05-19T12:49:27.450+01:00", # local? and dc.date dateCreated
+  "modified":"2016-05-23T09:25:18.839+01:00", # local and dc.date dateModified
+  "access":"", # dc.rights? dcterms accessRights
+
+  "associated":["IGONORE THIS"],
+
+  # dc.date and dcterms.dateAvailable (puree gives us a proper date from this)
+  "available":{
+    "year":"2016",
+    "month":"5",
+    "day":"19"
+  },
+  "description":"Data in support of Mn doped Bi2Te3", # dc.description
+  "doi":"", # dc.identifier
+  "file":["IGONORE THIS"],
+  "geographical":["WHAT'S IN THIS"], # dcterms.spatial dc.coverage
+  "keyword":["WHAT'S IN THIS"], # dc.subject
+  "link":[{ # dc.relation link
+    "url":"http://www.example.com/~abc1234/xyz/",
+    "description":"An interesting description"
+  },],
+  "organisation": { # dc.contributor?
+    "uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx",
+    "name":"Institute for the Arts",
+    "type":"Department"
+    },
+  "person":{ # dc.creator (if role == Creator) or dc.contributor
+    "internal":[{
+      "name":{
+        "first":"Vlado",
+        "last":"Lazarov"},
+      "role":"Creator",
+      "uuid":"0381412f-261a-4967-9a41-4997854a2d64"}],
+    "external":[],
+    "other":[]},
+
+  "project":[{ # dc.relation or dc.source relatedProject
+    "title":"An interesting project title",
+    "uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+  }],
+  "production":{ # dc.date (range) dateOfProduction
+    "start": {
+      "year":"2005",
+      "month":"5",
+      "day":"10"
+    },
+    "end": {
+      "year":"2011",
+      "month":"9",
+      "day":"18"
+    }},
+  "publication":[{ #dc.relation relatedPublication
+    "type":"Journal article",
+    "title":"An interesting journal article title",
+    "uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+  }],
+  "publisher":"University of York", # dc.publisher
+  "temporal":{ # dc.coverage  and dcterms.temporal
+    "start": {
+      "year":"2005",
+      "month":"5",
+      "day":"10"
+    },
+    "end": {
+      "year":"2011",
+      "month":"9",
+      "day":"18"
+    }},
+  "title":"Mn-Bi2Te3" # dc.title
+}]
