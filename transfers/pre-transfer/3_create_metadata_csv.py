@@ -7,7 +7,7 @@ import pwd
 import grp
 import json
 
-md_csv = {}
+md_csv = {"parts":"objects"}
 MAPPING = {
     'title': 'dc.title',
     'description': 'dc.description',
