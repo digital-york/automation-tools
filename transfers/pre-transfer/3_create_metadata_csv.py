@@ -68,11 +68,11 @@ def main(transfer_path):
     f.write(csv_str)
     f.close
 
-    #print('Reset file permissions to archivematica:archivematica')
+    print('Reset file permissions to archivematica:archivematica')
 
-    #uid = pwd.getpwnam("archivematica").pw_uid
-    #gid = grp.getgrnam("archivematica").gr_gid
-    #os.chown(md_csv, uid,gid)
+    uid = pwd.getpwnam("archivematica").pw_uid
+    gid = grp.getgrnam("archivematica").gr_gid
+    os.chown(md_csv_name, uid,gid)
 
 # Check for empty strings, lists and dicts
 def has_value(value):
