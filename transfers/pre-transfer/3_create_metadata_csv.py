@@ -40,7 +40,7 @@ def main(transfer_path):
 
     with open(md_json) as file:
         metadata = json.load(file)
-
+        print(metadata)
         for x in metadata[0]:
             y = has_value(metadata[0][x])
             if y is not None:
@@ -53,9 +53,6 @@ def main(transfer_path):
                     else:
                         md_csv[mp] = [y]
 
-    md_json_name = os.path.join(transfer_path, os.path.join('metadata', 'metadata.json'))
-    with open(md_json_name, 'w') as fp:
-        json.dump(md_csv, fp)
 
     # path for metadata.csv
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
@@ -79,7 +76,7 @@ def main(transfer_path):
     uid = pwd.getpwnam("archivematica").pw_uid
     gid = grp.getgrnam("archivematica").gr_gid
     os.chown(md_csv_name, uid,gid)
-    os.chown(md_json_name, uid, gid)
+
 
 # Check for empty strings, lists and dicts
 def has_value(value):
