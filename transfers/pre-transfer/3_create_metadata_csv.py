@@ -33,9 +33,7 @@ MAPPING = {
 def main(transfer_path):
     # path for metadata.json
     md_json = os.path.join(transfer_path, os.path.join('metadata', os.path.join('submissionDocumentation','metadata.json')))
-    ids = transfer_path.split('/')
-    md_csv['parts'] = [ids[len(ids) - 2]]
-    print(md_csv)
+
     # Open metadata.json
     # try this https://github.com/evidens/json2csv
 
@@ -58,12 +56,14 @@ def main(transfer_path):
     # path for metadata.csv
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
     f = open(md_csv_name,'w')
-    csv_str = ''
+    ids = transfer_path.split('/')
+    csv_str = 'parts'
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
                 csv_str += ',' + m
     csv_str += "\n"
+    csv_str += ids[len(ids) - 2]
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
