@@ -63,7 +63,7 @@ def main(transfer_path):
             if i != None:
                 csv_str += ',' + m
     csv_str += "\n"
-    csv_str += ids[len(ids) - 2]
+    csv_str += 'objects/' + ids[len(ids) - 2]
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:

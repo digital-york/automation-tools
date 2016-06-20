@@ -31,7 +31,6 @@ def main(transfer_path):
         try:
             if name != 'submissionDocumentation' and name != 'metadata' and name != 'processingMCP.xml' and name != 'metadata.json':
                 dest = os.path.join(transfer_path, os.path.join('objects',os.path.join(ids[len(ids) - 2],name)))
-                print(dest)
                 shutil.move(full_name, dest)
             elif name == 'metadata.json':
                 shutil.move(full_name, dest_s)
