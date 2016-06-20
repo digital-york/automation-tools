@@ -40,7 +40,7 @@ def main(transfer_path):
 
     with open(md_json) as file:
         metadata = json.load(file)
-        print(metadata)
+
         for x in metadata[0]:
             y = has_value(metadata[0][x])
             if y is not None:
@@ -67,7 +67,7 @@ def main(transfer_path):
         for i in md_csv[m]:
             if i != None:
                 csv_str += '"' + i + '",'
-
+    print(csv_str)
     f.write(csv_str)
     f.close
 
