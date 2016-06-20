@@ -54,8 +54,8 @@ def main(transfer_path):
                         md_csv[mp] = [y]
 
     md_json_name = os.path.join(transfer_path, os.path.join('metadata', 'metadata.json'))
-    with open('data.json', 'w') as fp:
-        json.dump(md_json_name, fp)
+    with open(md_json_name, 'w') as fp:
+        json.dump(md_csv, fp)
 
     # path for metadata.csv
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
