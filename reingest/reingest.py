@@ -30,14 +30,10 @@ def start_reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config=
     :param processing_config: Processing configuration to specify for a full reingest.
     """
     url = ss_url + '/api/v2/file/' + aip_uuid + '/reingest/'
-    #ss_user = 'ss_robot'
-    #ss_key = '955898585bf9a921e66ea80b125f3c697cd6fcdb'
     data = {
         'pipeline': pipeline,
         'reingest_type': reingest_type,
         'processing_config': processing_config,
-        #'username': ss_user,
-        #'api_key': ss_key
     }
     LOGGER.debug('URL: %s; JSON body: %s', url, data)
     try:
@@ -46,7 +42,6 @@ def start_reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config=
         LOGGER.exception('Error POSTing to start reingest')
         return None
     LOGGER.debug('Response: %s', response)
-    LOGGER.debug('Response text: %s', response.text)
     if response.status_code != requests.codes.accepted:  # 202
         LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.warning('Response: %s', response.text)
@@ -69,7 +64,6 @@ def _call_url_json(url, params):
     LOGGER.debug('URL: %s; params: %s;', url, params)
     response = requests.get(url, params=params)
     LOGGER.debug('Response: %s', response)
-    LOGGER.debug('Response text: %s', response.text)
     if not response.ok:
         LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.debug('Response: %s', response.text)
@@ -89,25 +83,18 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
     """
     time.sleep(6)
     # List available transfers
-    #get_url = url + "/api/transfer/unapproved"
-    get_url = url + "/api/ingest/waiting"
+    get_url = url + "/api/transfer/unapproved"
     params = {'username': user_name, 'api_key': api_key}
     waiting_transfers = _call_url_json(get_url, params)
     if waiting_transfers is None:
         LOGGER.warning('No waiting transfer ')
         return None
     for a in waiting_transfers['results']:
-        LOGGER.debug("Found waiting transfer: %s", a['sip_directory'])
-        if a['sip_uuid'] == unit_uuid:
+        LOGGER.debug("Found waiting transfer: %s", a['directory'])
+        if a['uuid'] == unit_uuid:
             # Post to approve transfer
-            #post_url = url + "/api/transfer/approve/"
-            post_url = url + "/api/ingest/reingest/"
-            #params = {'username': user_name, 'api_key': api_key, 'type': a['type'], 'directory': a['directory']}
-            get_url = 'http://test:test@192.168.168.192:8000/api/v2/file/' + a['sip_uuid']
-            ss_params = {'username': 'ss_robot', 'api_key': '955898585bf9a921e66ea80b125f3c697cd6fcdb'}
-            package_loc = _call_url_json(get_url,ss_params)
-            print(package_loc['current_path'])
-            params = {'username': user_name, 'api_key': api_key,'uuid': a['sip_uuid'],'name': package_loc['current_path']}
+            post_url = url + "/api/transfer/approve/"
+            params = {'username': user_name, 'api_key': api_key, 'type': a['type'], 'directory': a['directory']}
             LOGGER.debug('URL: %s; Params: %s;', post_url, params)
             r = requests.post(post_url, data=params)
             LOGGER.debug('Response: %s', r)
@@ -116,7 +103,7 @@ def approve_transfer(unit_uuid, url, api_key, user_name):
                 return None
             return a['uuid']
         else:
-            LOGGER.debug("%s is not what we are looking for", a['sip_directory'])
+            LOGGER.debug("%s is not what we are looking for", a['directory'])
     else:
         return None
 
@@ -128,9 +115,7 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
     if response is None:
         LOGGER.info('Exiting')
         return
-    print(response)
-    #reingest_uuid = response.get('reingest_uuid')
-    reingest_uuid = aip_uuid
+    reingest_uuid = response.get('reingest_uuid')
     LOGGER.info('Reingested UUID: %s', reingest_uuid)
 
     # Approve reingest
@@ -138,7 +123,6 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
     if am_url and api_key and user_name:
         retry_count = 3
         for i in range(retry_count):
-
             result = approve_transfer(reingest_uuid, am_url, api_key, user_name)
             # Mark as started
             if result:
@@ -150,7 +134,7 @@ def reingest(ss_url, aip_uuid, pipeline, reingest_type, processing_config='defau
             return None
     else:
         LOGGER.info('Archivematica API not information provided, cannot approve transfer.')
-        LOGGER.info('Done %s reingest of AIP %s on pipeline %s with %s config and reingest UUID of %s', reingest_type, aip_uuid, pipeline, processing_config, reingest_uuid)
+    LOGGER.info('Done %s reingest of AIP %s on pipeline %s with %s config and reingest UUID of %s', reingest_type, aip_uuid, pipeline, processing_config, reingest_uuid)
 
 
 def metadata(sip_uuid, paths, am_url, user_name, api_key):
