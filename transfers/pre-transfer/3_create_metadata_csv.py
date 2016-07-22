@@ -55,7 +55,7 @@ def main(transfer_path):
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
     f = open(md_csv_name,'w')
     ids = transfer_path.split('/')
-    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL)
+    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL,encoding="utf-8")
     csv_row = []
     csv_row.append('parts')
     for m in md_csv:
