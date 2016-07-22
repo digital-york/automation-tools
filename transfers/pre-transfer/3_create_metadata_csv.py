@@ -57,18 +57,18 @@ def main(transfer_path):
     ids = transfer_path.split('/')
     writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL)
     csv_row = []
-    csv_row << 'parts'
+    csv_row.append('parts')
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_row << m
+                csv_row.append(m)
     writer.writerow(csv_row)
     csv_row = []
-    csv_row << 'objects/' + ids[len(ids) - 2]
+    csv_rowcsv_row.append('objects/' + ids[len(ids) - 2])
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_row << i
+                csv_row.append(i)
     writer.writerow(csv_row)
     writer.close
 
