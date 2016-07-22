@@ -57,7 +57,7 @@ def main(transfer_path):
     f = open(md_csv_name,'w')
     f.write(codecs.BOM_UTF8)
     ids = transfer_path.split('/')
-    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL)
+    writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
     csv_row = []
     csv_row.append('parts')
     for m in md_csv:
@@ -72,7 +72,7 @@ def main(transfer_path):
             if i != None:
                 csv_row.append(unicode(i).encode('utf8'))
     writer.writerow(csv_row)
-    writer.close
+    f.close
 
     print('Reset file permissions to archivematica:archivematica')
 
