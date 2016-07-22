@@ -197,12 +197,14 @@ def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
         "api-key": api_key
     }
     }
-    update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
-    if update == None:
-        LOGGER.info('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
-    else:
-        LOGGER.info('Updated hydra object: ' + str(update))
-
+    try:
+        update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
+        if update == None:
+            LOGGER.info('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+        else:
+            LOGGER.info('Updated hydra object: ' + str(update))
+    except Exception as ex:
+        LOGGER.error(ex)
 
 def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     # extract aip info
