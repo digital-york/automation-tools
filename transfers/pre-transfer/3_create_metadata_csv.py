@@ -6,6 +6,7 @@ import sys
 import pwd
 import grp
 import json
+import csv
 
 md_csv = {}
 MAPPING = {
@@ -54,20 +55,22 @@ def main(transfer_path):
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
     f = open(md_csv_name,'w')
     ids = transfer_path.split('/')
-    csv_str = 'parts'
+    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL)
+    csv_row = []
+    csv_row << 'parts'
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_str += ',' + m
-    csv_str += "\n"
-    csv_str += 'objects/' + ids[len(ids) - 2]
+                csv_row << m
+    writer.writerow(csv_row)
+    csv_row = []
+    csv_row << 'objects/' + ids[len(ids) - 2]
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_str += ',"' + i + '"'
-    print(csv_str)
-    f.write(csv_str)
-    f.close
+                csv_row << i
+    writer.writerow(csv_row)
+    writer.close
 
     print('Reset file permissions to archivematica:archivematica')
 
