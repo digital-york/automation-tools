@@ -64,7 +64,7 @@ def main(transfer_path):
                 csv_row.append(m)
     writer.writerow(csv_row)
     csv_row = []
-    csv_rowcsv_row.append('objects/' + ids[len(ids) - 2])
+    csv_row.append('objects/' + ids[len(ids) - 2])
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
