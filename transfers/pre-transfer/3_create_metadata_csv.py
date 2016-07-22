@@ -7,6 +7,7 @@ import pwd
 import grp
 import json
 import csv
+import codecs
 
 md_csv = {}
 MAPPING = {
@@ -54,21 +55,22 @@ def main(transfer_path):
     # path for metadata.csv
     md_csv_name = os.path.join(transfer_path, os.path.join('metadata','metadata.csv'))
     f = open(md_csv_name,'w')
+    f.write(codecs.BOM_UTF8)
     ids = transfer_path.split('/')
-    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL,encoding="utf-8")
+    writer = csv.writer(f, delimiter='	', quotechar='"', quoting=csv.QUOTE_ALL)
     csv_row = []
     csv_row.append('parts')
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_row.append(m)
+                csv_row.append(unicode(m).encode('utf8'))
     writer.writerow(csv_row)
     csv_row = []
     csv_row.append('objects/' + ids[len(ids) - 2])
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_row.append(i)
+                csv_row.append(unicode(i).encode('utf8'))
     writer.writerow(csv_row)
     writer.close
 
