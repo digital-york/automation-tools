@@ -153,7 +153,9 @@ def process_dict(name,value):
         if value['start'] != {}:
             d = add_date(value['start'])
         if value['end'] != {}:
-            d += ' - ' + add_date(value['end'])
+            end = add_date(value['end'])
+            if end is not None:
+                d += ' - ' + end
         mp = MAPPING[name]
         if mp in md_csv:
             md_csv[mp].append(d)
@@ -170,7 +172,9 @@ def process_dict(name,value):
         if value['start'] != {}:
             d = add_date(value['start'])
         if value['end'] != {}:
-            d += ' - ' + add_date(value['end'])
+            end = add_date(value['end'])
+            if end is not None:
+                d += ' - ' + end
         mp = MAPPING[name]
         if mp in md_csv:
             md_csv[mp].append(d)
