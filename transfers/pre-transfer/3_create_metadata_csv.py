@@ -39,8 +39,8 @@ def main(transfer_path):
     with open(md_json) as file:
         metadata = json.load(file)
 
-        for x in metadata[0]:
-            y = has_value(metadata[0][x])
+        for x in metadata:
+            y = has_value(metadata[x])
             if y is not None:
                 if isinstance(y,dict) or isinstance(y,list):
                     process_dict(x,y)
