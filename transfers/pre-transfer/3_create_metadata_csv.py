@@ -73,7 +73,7 @@ def main(transfer_path):
     for m in md_csv:
         for i in md_csv[m]:
             if i != None:
-                csv_row.append(unicode(i).encode('utf8'))
+                csv_row.append(unicode(i.replace('"','\'')).encode('utf8'))
     writer.writerow(csv_row)
     f.close
 
