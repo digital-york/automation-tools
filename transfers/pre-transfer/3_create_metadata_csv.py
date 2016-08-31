@@ -42,8 +42,11 @@ def main(transfer_path):
         for x in metadata:
             y = has_value(metadata[x])
             if y is not None:
-                if isinstance(y,dict) or isinstance(y,list):
+                if isinstance(y,dict):
                     process_dict(x,y)
+                elif isinstance(y,list):
+                    for l in y:
+                        process_dict(x,l)
                 else:
                     mp = MAPPING[x]
                     if mp in md_csv:
