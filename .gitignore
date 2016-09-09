@@ -1,6 +1,8 @@
 *.py[co]
 *.swp
 *~
+.DS_STORE
+*.DS_STORE
 
 # Eclipse IDE files
 .project

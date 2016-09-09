@@ -49,6 +49,7 @@ except ImportError:
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(THIS_DIR)
 
+# should I create a different logger?
 LOGGER = logging.getLogger('transfer')
 
 CONFIG_FILE = None
@@ -137,10 +138,17 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
     :param str unit_type: 'ingest' or 'transfer'
     :returns: Dict with status of the unit from Archivematica or None.
     """
+
+    unit_info = None
+
     # Get status
     url = am_url + '/api/' + unit_type + '/status/' + unit_uuid + '/'
     params = {'username': am_user, 'api_key': am_api_key}
-    unit_info = _call_url_json(url, params, 'get')
+    try:
+        unit_info = _call_url_json(url, params, 'get')
+    except ValueError as e:  # JSON could not be decoded
+        LOGGER.error(e.message)
+        return None
 
     # If Transfer is complete, get the SIP's status
     if unit_info and unit_type == 'transfer' and unit_info['status'] == 'COMPLETE' and unit_info[
@@ -152,9 +160,16 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
         db_unit.uuid = unit_info['sip_uuid']
         # Get SIP status
         url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
-        unit_info = _call_url_json(url, params, 'get')
-
-    return unit_info
+        try:
+            unit_info = _call_url_json(url, params, 'get')
+        except ValueError as e:  # JSON could not be decoded
+            LOGGER.error(e.message)
+        return
+    if unit_info == None:
+        LOGGER.warning("nothing returned from archivematica API, unit_info is empty")
+        return
+    else:
+        return unit_info
 
 
 def run_scripts(directory, *args):
@@ -190,31 +205,36 @@ def run_scripts(directory, *args):
 
 
 def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
-    hydra_params = {"aip": {
+    hydra_params = {"package":
+        {
         "aip_uuid": aip_uuid,
         "status": status,
         "current_path": location,
         "api-key": api_key
-    }
-    }
+        }
+        }
     try:
         update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
         if update == None:
             LOGGER.info('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
-    except Exception as ex:
-        LOGGER.error(ex)
+    except Exception as e:
+        LOGGER.error(e.message)
+
 
 def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     # extract aip info
     # results-uuid, status, current_path, size
-    get_url = ss_url + '/api/v2/file/' + uuid
-    params = {'username': ss_user, 'api_key': ss_api_key}
-    aip = _call_url_json(get_url, params, 'get')
-    status = aip['status']
-    current_path  = aip['current_path']
-    return (status, current_path)
+    try:
+        get_url = ss_url + '/api/v2/file/' + uuid
+        params = {'username': ss_user, 'api_key': ss_api_key}
+        aip = _call_url_json(get_url, params, 'get')
+        status = aip['status']
+        current_path = aip['current_path']
+        return (status, current_path)
+    except Exception as e:
+        LOGGER.error(e.message)
 
 
 def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth):
@@ -296,6 +316,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 
     try:
         units = session.query(models.Unit)  # .filter_by(unit_type='PROCESSING')
+        # if using this for status of DIP, need to change this, eg. for uploaded, get DIP and check status of that
         for i in units:
             f = i.path.split('/')[1]
             if f in folders:
@@ -352,7 +373,29 @@ if __name__ == '__main__':
                         default=None)
     parser.add_argument('-c', '--config-file', metavar='FILE', help='Configuration file(log/db/PID files)',
                         default=None)
+
+    # Logging
+    parser.add_argument('--verbose', '-v', action='count', default=0, help='Increase the debugging output.')
+    parser.add_argument('--quiet', '-q', action='count', default=0, help='Decrease the debugging output')
+    parser.add_argument('--log-level', choices=['ERROR', 'WARNING', 'INFO', 'DEBUG'], default=None,
+                        help='Set the debugging output level. This will override -q and -v')
+
     args = parser.parse_args()
+
+    log_levels = {
+        2: 'ERROR',
+        1: 'WARNING',
+        0: 'INFO',
+        -1: 'DEBUG',
+    }
+
+    if args.log_level is None:
+        level = args.quiet - args.verbose
+        level = max(level, -1)  # No smaller than -1
+        level = min(level, 2)  # No larger than 2
+        log_level = log_levels[level]
+    else:
+        log_level = args.log_level
 
     sys.exit(main(
         am_user=args.user,
