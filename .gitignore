@@ -1,6 +1,8 @@
 *.py[co]
 *.swp
 *~
+*.DS_Store
+/*DS_Store
 
 # Eclipse IDE files
 .project
@@ -9,3 +11,4 @@
 
 # Sublime files
 *.sublime-*
+
