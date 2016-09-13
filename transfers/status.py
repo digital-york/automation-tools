@@ -249,43 +249,47 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
     :param depth: Depth relative to path_prefix to create a transfer from. Should be 1 or greater.
     :returns: Path relative to TS Location of the new transfer
     """
-    # Get sorted list from source dir
-    url = ss_url + '/api/v2/location/' + ts_location_uuid + '/browse/'
-    params = {
-        'username': ss_user,
-        'api_key': ss_api_key,
-    }
-    if path_prefix:
-        params['path'] = base64.b64encode(path_prefix)
-    browse_info = _call_url_json(url, params, 'get')
-    if browse_info is None:
-        return None
-    entries = browse_info['directories']
-    entries = [base64.b64decode(e.encode('utf8')) for e in entries]
-    LOGGER.debug('Entries: %s', entries)
-    entries = [os.path.join(path_prefix, e) for e in entries]
-    # If at the correct depth, check if any of these have not been made into transfers yet
-    if depth <= 1:
-        # Find the directories that are not already in the DB using sets
-        LOGGER.debug("New transfer candidates: %s", entries)
-        # Sort, take the first
-        entries = sorted(list(entries))
-        if not entries:
+    try:
+        # Get sorted list from source dir
+        url = ss_url + '/api/v2/location/' + ts_location_uuid + '/browse/'
+        params = {
+            'username': ss_user,
+            'api_key': ss_api_key,
+        }
+        if path_prefix:
+            params['path'] = base64.b64encode(path_prefix)
+        browse_info = _call_url_json(url, params, 'get')
+        if browse_info is None:
             return None
+        entries = browse_info['directories']
+        entries = [base64.b64decode(e.encode('utf8')) for e in entries]
+        LOGGER.debug('Entries: %s', entries)
+        entries = [os.path.join(path_prefix, e) for e in entries]
+        # If at the correct depth, check if any of these have not been made into transfers yet
+        if depth <= 1:
+            # Find the directories that are not already in the DB using sets
+            LOGGER.debug("New transfer candidates: %s", entries)
+            # Sort, take the first
+            entries = sorted(list(entries))
+            if not entries:
+                return None
+            return entries
+        else:  # if depth > 1
+            # Recurse on each directory
+            listy = []
+            for e in entries:
+                LOGGER.debug('New path: %s', e)
+                try:
+                    l = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1)
+                    listy.append(l[0].split('/')[1])
+                except Exception as ex:
+                    LOGGER.error(ex)
+            if listy != []:
+                entries = listy
         return entries
-    else:  # if depth > 1
-        # Recurse on each directory
-        listy = []
-        for e in entries:
-            LOGGER.debug('New path: %s', e)
-            try:
-                l = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1)
-                listy.append(l[0].split('/')[1])
-            except Exception as ex:
-                LOGGER.error(ex)
-        if listy != []:
-            entries = listy
-    return entries
+
+    except Exception as e:
+        LOGGER.error(e.message)
 
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, hydra_url,
