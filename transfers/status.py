@@ -164,7 +164,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
             unit_info = _call_url_json(url, params, 'get')
         except ValueError as e:  # JSON could not be decoded
             LOGGER.error(e.message)
-        return
+        return unit_info
     if unit_info == None:
         LOGGER.warning("nothing returned from archivematica API, unit_info is empty")
         return
@@ -216,12 +216,13 @@ def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
     try:
         update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
         if update == None:
-            LOGGER.info('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+            raise
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
     except Exception as e:
         LOGGER.error(e.message)
-
+        raise Exception('Problem updating the hydra object')
 
 def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     # extract aip info
@@ -335,10 +336,15 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
                     status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
                     # update hydra
                     status = status_info['status']
-                    update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
-                    status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
-                    update_status(am_api_key, status, hydra_url, f, i.uuid,
-                                  current_path)
+                    try:
+                        update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
+                        status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
+                        update_status(am_api_key, status, hydra_url, f, i.uuid,
+                                      current_path)
+                    except Exception as e:
+                        LOGGER.error('ERROR: %s', e)
+                        os.remove(pid_file)
+                        return 0
                     if status == 'UPLOADED':
                         delete_path = os.path.join('/', os.path.join(ts_path, i.path))
                         LOGGER.info('Deleting: ' + delete_path)
@@ -346,6 +352,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
+        os.remove(pid_file)
         return 0
 
     session.commit()
