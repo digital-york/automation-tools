@@ -22,6 +22,7 @@ import shutil
 
 # from . import models
 import models
+import amclient
 
 try:
     from os import fsencode, fsdecode
@@ -224,6 +225,46 @@ def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
         LOGGER.error(e.message)
         raise Exception('Problem updating the hydra object')
 
+def update_dip(api_key, hydra_url, h_id, dip_uuid,current_path,resource_uri,current_location,size):
+    hydra_params = {"package":
+            {
+            "dip_uuid": dip_uuid,
+            "api-key": api_key,
+            "current_path":current_path,
+            "resource_uri":resource_uri,
+            "current_location":current_location,
+            "size":size
+            }
+        }
+    try:
+        update = _call_url_json(hydra_url + '/api/v1/dip/' + h_id, hydra_params, 'put')
+        if update == None:
+            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+            raise
+        else:
+            LOGGER.info('Updated hydra object: ' + str(update))
+    except Exception as e:
+        LOGGER.error(e.message)
+        raise Exception('Problem updating the hydra object')
+
+def waiting_dips(api_key, hydra_url):
+    hydra_params = {"package":
+            {
+            "api-key": api_key
+            }
+        }
+    try:
+        waiting = _call_url_json(hydra_url + '/api/v1/dip/waiting', hydra_params, 'post')
+        if waiting == None:
+            LOGGER.info('Nothing waiting.')
+            return waiting
+        else:
+            LOGGER.info('Waiting: %s', waiting)
+            return waiting
+    except Exception as e:
+        LOGGER.error(e.message)
+        raise Exception('Problem updating the hydra object')
+
 def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     # extract aip info
     # results-uuid, status, current_path, size
@@ -352,7 +393,40 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
-        os.remove(pid_file)
+
+    try:
+        # call the hydra api for waiting dips
+        dips = waiting_dips(am_api_key, hydra_url)
+        # call the hydra api to update the dip
+        if dips != None:
+            for key, value in dips.items():
+                try:
+                    # get dip from aip using the amclient script
+                    kwargs = {
+                        'ss_user_name':ss_user,
+                        'ss_url': ss_url,
+                        'ss_api_key':ss_api_key,
+                        'aip_uuid': value
+                        }
+                    # should we check that the aip is UPLOADED?
+                    client = amclient.AMClient(**kwargs)
+                    data = client.aip2dips()
+                    LOGGER.info(data)
+                    if len(data) > 0:
+                        d = data[0]
+                        LOGGER.info('Updating DIP: %s', d['uuid'])
+                        update_dip(am_api_key, hydra_url, key, d['uuid'],
+                                   d['current_path'],
+                                   d['resource_uri'],
+                                   d['current_location'],
+                                   d['size'])
+                    else:
+                        LOGGER.warning('AMClient returned an empty list')
+                except Exception as e:
+                    LOGGER.error('ERROR: %s', e)
+
+    except Exception as e:
+        LOGGER.error('ERROR: %s', e)
         return 0
 
     session.commit()
