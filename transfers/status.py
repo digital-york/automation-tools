@@ -114,11 +114,11 @@ def _call_url_json(url, params, method):
     """
     LOGGER.debug('URL: %s; params: %s;', url, params)
     if method == 'get':
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, verify=False)
     elif method == 'put':
-        response = requests.put(url, data=json.dumps(params))
+        response = requests.put(url, data=json.dumps(params), verify=False)
     elif method == 'post':
-        response = requests.post(url, data=json.dumps(params))
+        response = requests.post(url, data=json.dumps(params), verify=False)
     LOGGER.debug('Response: %s', response)
     if not response.ok:
         LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
