@@ -55,6 +55,8 @@ LOGGER = logging.getLogger('transfer')
 
 CONFIG_FILE = None
 
+# suppress warnings about https requests to sites with un-verified SSL certificates
+requests.packages.urllib3.disable_warnings()
 
 def get_setting(setting, default=None):
     config = configparser.SafeConfigParser()
