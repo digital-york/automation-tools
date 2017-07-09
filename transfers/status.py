@@ -388,7 +388,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
-                        delete_path = os.path.join(ts_basepath, os.path.join(ts_path, i.path))
+                        delete_path = os.path.join(ts_basepath, i.path)
                         LOGGER.info('Deleting: ' + delete_path)
                         shutil.rmtree(delete_path)
 
