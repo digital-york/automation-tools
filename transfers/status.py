@@ -323,7 +323,8 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
                 LOGGER.debug('New path: %s', e)
                 try:
                     l = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, e, depth - 1)
-                    listy.append(l[0].split('/')[1])
+                    if l is not None:
+                        listy.append(l[0].split('/')[-1])  # last element will be rightmost folder
                 except Exception as ex:
                     LOGGER.error(ex)
             if listy != []:
@@ -334,7 +335,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         LOGGER.error(e.message)
 
 
-def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, hydra_url,
+def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
          config_file=None):
     setup(config_file)
 
@@ -358,13 +359,13 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         f.close()
 
     # Get list of folders
-    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, '', depth)
+    folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, ts_path, depth)
 
     try:
         units = session.query(models.Unit)  # .filter_by(unit_type='PROCESSING')
         # if using this for status of DIP, need to change this, eg. for uploaded, get DIP and check status of that
         for i in units:
-            f = i.path.split('/')[1]
+            f = i.path.split('/')[-1]  # last element will be rightmost folder
             if f in folders:
                 LOGGER.info('DOING ' + f)
                 if i.unit_type == 'transfer':
@@ -387,7 +388,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
-                        delete_path = os.path.join('/', os.path.join(ts_path, i.path))
+                        delete_path = os.path.join(ts_basepath, os.path.join(ts_path, i.path))
                         LOGGER.info('Deleting: ' + delete_path)
                         shutil.rmtree(delete_path)
 
@@ -445,6 +446,8 @@ if __name__ == '__main__':
     parser.add_argument('--ss-api-key', metavar='KEY', required=True, help='API key of the Storage Service user.')
     parser.add_argument('-t', '--transfer-source', metavar='UUID', required=True,
                         help='Transfer Source Location UUID to fetch transfers from.')
+    parser.add_argument('--transfer-basepath', metavar='BASEPATH', help='Absolute path to the Transfer Source. Default: ""',
+                        type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
     parser.add_argument('--transfer-path', metavar='PATH', help='Relative path within the Transfer Source. Default: ""',
                         type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
     parser.add_argument('--depth', '-d',
@@ -488,6 +491,7 @@ if __name__ == '__main__':
         ss_user=args.ss_user,
         ss_api_key=args.ss_api_key,
         ts_uuid=args.transfer_source,
+        ts_basepath=args.transfer_basepath,
         ts_path=args.transfer_path,
         depth=args.depth,
         am_url=args.am_url,
