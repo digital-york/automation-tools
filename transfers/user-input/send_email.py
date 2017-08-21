@@ -20,8 +20,8 @@ DO NOT REPLY TO THIS MESSAGE.  This email address is not monitored.
 def main(microservice_name, first_time, unit_path, unit_uuid, unit_name, unit_type):
     if first_time != 'True':
         return
-    if microservice_name != 'Approve normalization':
-        return
+    #if microservice_name != 'Approve normalization':
+    #    return
     content = CONTENTS.format(name=unit_name, type=unit_type.title(), uuid=unit_uuid)
     msg = MIMEText(content)
     msg['Subject'] = '{} waiting for user approval'.format(unit_name)
