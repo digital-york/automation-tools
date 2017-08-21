@@ -8,6 +8,8 @@ PORT = 25
 FROM = 'do-not-reply@york.ac.uk'
 TO = ["rdyork-admins-group@york.ac.uk"]  # List of email addresses
 CONTENTS = """
+Notice from Archivematica - may require login to Archivematica to action:
+
 {type} {name} ({uuid}) is waiting for user approval.
 
 DO NOT REPLY TO THIS MESSAGE.  This email address is not monitored.
