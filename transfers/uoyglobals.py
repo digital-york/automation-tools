@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 smtp_server = 'smtp.york.ac.uk'
 smtp_port = 25
 error_from = 'do-not-reply@york.ac.uk'
-error_to = 'fergus.a.mcglynn@york.ac.uk'
+error_to = 'rdyork-admins-group@york.ac.uk'
 error_subject = 'Notification from Archivematica automation tools'
 
 def send_email (email_from, email_to, subject, message_body):
