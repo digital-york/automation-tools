@@ -133,8 +133,8 @@ def _call_url_json(url, params, method):
         LOGGER.error(emsg)
         log_error(emsg)
         raise Exception(emsg)
-        LOGGER.debug('Response: %s', response.text)
-        return None
+        #LOGGER.debug('Response: %s', response.text)
+        #return None
     try:
         return response.json()
     except ValueError:  # JSON could not be decoded
@@ -295,8 +295,9 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
         current_path = aip['current_path']
         return (status, current_path)
     except Exception as e:
-        LOGGER.error(e.message)
-        log_error(e.message)
+        emsg = 'failed to get AIP information from Archivematica Storage Service - ' + e.message
+        LOGGER.error(emsg)
+        log_error(emsg)
 	raise
 
 
