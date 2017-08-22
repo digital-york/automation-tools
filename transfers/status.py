@@ -130,8 +130,8 @@ def _call_url_json(url, params, method):
     LOGGER.debug('Response: %s', response)
     if not response.ok:
         emsg = 'Request to %s returned %s %s' % (url, response.status_code, response.reason) 
-        LOGGER.error(emsg)
-        log_error(emsg)
+        #LOGGER.error(emsg)
+        #log_error(emsg)
         raise Exception(emsg)
         #LOGGER.debug('Response: %s', response.text)
         #return None
@@ -295,7 +295,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
         current_path = aip['current_path']
         return (status, current_path)
     except Exception as e:
-        emsg = 'failed to get AIP information from Archivematica Storage Service - ' + e.message
+        emsg = 'Failed to get AIP information from Archivematica Storage Service - ' + e.message
         LOGGER.error(emsg)
         log_error(emsg)
 	raise
@@ -433,7 +433,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         update_status(am_api_key, status, hydra_url, f, i.uuid,
                                       current_path)
                     except Exception as e:
-                        emsg = 'ERROR: could not process ingested AIP ' + f + ' - %s'
+                        emsg = 'ERROR: could not process ingested AIP ' + f + ' - (actual problem: %s)'
                         LOGGER.error(emsg, e)
                         log_error(emsg, e)
                         email_errors()			
