@@ -345,9 +345,9 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         log_error(e.message)
 
 # FAM addition - handle errors - email them, ideally once, to admins
-def log_error (error_message):
-    LOGGER.error(error_message)
-    ERROR_MESSAGE += error_message + "\n"
+def log_error (msg, *args, **kwargs):
+    LOGGER.error(msg, args, kwargs)
+    ERROR_MESSAGE += msg + "\n"
 
 def email_errors ():
     if (ERROR_MESSAGE != ''):
