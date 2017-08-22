@@ -342,7 +342,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
         LOGGER.error(e.message)
 
 # FAM addition - handle errors - email them, ideally once, to admins
-def handle_error (error_message)
+def handle_error (error_message):
     # send error message as email
     send_error_email("An error occurred during the 'status.py' cron script:\n\n" + error_message)
 
