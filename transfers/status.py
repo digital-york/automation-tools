@@ -348,7 +348,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
 def log_error (msg, *args, **kwargs):
     global ERROR_MESSAGE
     LOGGER.error(msg, *args, **kwargs)
-    ERROR_MESSAGE += msg + "\n"
+    ERROR_MESSAGE += msg % *args + "\n"
 
 def email_errors ():
     global ERROR_MESSAGE
