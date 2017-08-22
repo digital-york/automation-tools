@@ -357,7 +357,7 @@ def email_errors ():
         msg += ERROR_MESSAGE
         msg += "\nMore information might be available in the automation tools log file (currently /var/log/archivematica/automation-tools/status-output.log)"
         # check to see if this error has already been sent
-        last_error_file = os.path.join(THIS_DIR, "last_status_error")
+        last_error_file = get_setting('statuserrorfile', os.path.join(THIS_DIR, "last_status_error"))
         if os.path.isfile(last_error_file) and os.access(last_error_file, os.R_OK):
             with open(last_error_file, 'r') as content_file:
                 content = content_file.read()
