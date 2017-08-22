@@ -24,6 +24,9 @@ import shutil
 import models
 import amclient
 
+# FAM addition - import methods to help with sending email
+from uoyglobals import send_email, send_error_email
+
 try:
     from os import fsencode, fsdecode
 except ImportError:
@@ -280,6 +283,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
         return (status, current_path)
     except Exception as e:
         LOGGER.error(e.message)
+	raise
 
 
 def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, path_prefix, depth):
@@ -337,6 +341,11 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
     except Exception as e:
         LOGGER.error(e.message)
 
+# FAM addition - handle errors - email them, ideally once, to admins
+def handle_error (error_message)
+    # send error message as email
+    send_error_email("An error occurred during the 'status.py' cron script:\n\n" + error_message)
+
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
          config_file=None):
@@ -388,6 +397,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                                       current_path)
                     except Exception as e:
                         LOGGER.error('ERROR: %s', e)
+                        handle_error(e)			
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
@@ -397,6 +407,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
+        handle_error(e)
 
     try:
         # call the hydra api for waiting dips
@@ -428,9 +439,11 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         LOGGER.warning('AMClient returned an empty list')
                 except Exception as e:
                     LOGGER.error('ERROR: %s', e)
+                    handle_error(e)
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
+        handle_error(e)
         return 0
 
     session.commit()
