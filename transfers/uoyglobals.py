@@ -19,5 +19,5 @@ def send_email (email_from, email_to, subject, message_body):
   smtpObj.quit
 
 def send_error_email (message_body):
-  sendEmail(error_from, error_to, error_subject, message_body)
+  send_email(error_from, error_to, error_subject, message_body)
 
