@@ -430,8 +430,9 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         update_status(am_api_key, status, hydra_url, f, i.uuid,
                                       current_path)
                     except Exception as e:
-                        LOGGER.error('ERROR: %s', e)
-                        log_error('ERROR: %s', e)
+                        emsg = 'ERROR: could not process ingested AIP ' + f + ' - %s'
+                        LOGGER.error(emsg, e)
+                        log_error(emsg, e)
                         email_errors()			
                         os.remove(pid_file)
                         return 0
