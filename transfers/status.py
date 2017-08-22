@@ -397,7 +397,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                                       current_path)
                     except Exception as e:
                         LOGGER.error('ERROR: %s', e)
-                        handle_error(e)			
+                        handle_error(str(e))			
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
@@ -407,7 +407,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
-        handle_error(e)
+        handle_error(str(e))
 
     try:
         # call the hydra api for waiting dips
@@ -439,11 +439,11 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         LOGGER.warning('AMClient returned an empty list')
                 except Exception as e:
                     LOGGER.error('ERROR: %s', e)
-                    handle_error(e)
+                    handle_error(str(e))
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
-        handle_error(e)
+        handle_error(str(e))
         return 0
 
     session.commit()
