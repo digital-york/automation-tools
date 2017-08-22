@@ -129,7 +129,7 @@ def _call_url_json(url, params, method):
         response = requests.post(url, data=json.dumps(params), verify=False)
     LOGGER.debug('Response: %s', response)
     if not response.ok:
-	response.raise_for_status()
+        LOGGER.error('Request to %s returned %s %s', url, response.status_code, response.reason)
         log_error('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.debug('Response: %s', response.text)
         return None
@@ -158,6 +158,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
     try:
         unit_info = _call_url_json(url, params, 'get')
     except ValueError as e:  # JSON could not be decoded
+        LOGGER.error(e.message)
         log_error(e.message)
         return None
 
@@ -174,6 +175,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
             url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
             unit_info = _call_url_json(url, params, 'get')
         except ValueError as e:  # JSON could not be decoded
+            LOGGER.error(e.message)
             log_error(e.message)
         return unit_info
     if unit_info == None:
@@ -227,11 +229,13 @@ def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
     try:
         update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
         if update == None:
+            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             log_error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             raise
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
     except Exception as e:
+        LOGGER.error(e.message)
         log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
@@ -249,11 +253,13 @@ def update_dip(api_key, hydra_url, h_id, dip_uuid,current_path,resource_uri,curr
     try:
         update = _call_url_json(hydra_url + '/api/v1/dip/' + h_id, hydra_params, 'put')
         if update == None:
+            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             log_error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             raise
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
     except Exception as e:
+        LOGGER.error(e.message)
         log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
@@ -272,6 +278,7 @@ def waiting_dips(api_key, hydra_url):
             LOGGER.info('Waiting: %s', waiting)
             return waiting
     except Exception as e:
+        LOGGER.error(e.message)
         log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
@@ -286,6 +293,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
         current_path = aip['current_path']
         return (status, current_path)
     except Exception as e:
+        LOGGER.error(e.message)
         log_error(e.message)
 	raise
 
@@ -337,18 +345,19 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
                     if l is not None:
                         listy.append(l[0].split('/')[-1])  # last element will be rightmost folder
                 except Exception as ex:
+                    LOGGER.error(ex.message)
                     log_error(ex.message)
             if listy != []:
                 entries = listy
         return entries
 
     except Exception as e:
+        LOGGER.error(e.message)
         log_error(e.message)
 
 # FAM addition - handle errors - email them, ideally once, to admins
 def log_error (msg, *args, **kwargs):
     global ERROR_MESSAGE
-    LOGGER.error(msg, *args, **kwargs)
     ERROR_MESSAGE += msg % args + "\n"
 
 def email_errors ():
@@ -421,6 +430,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         update_status(am_api_key, status, hydra_url, f, i.uuid,
                                       current_path)
                     except Exception as e:
+                        LOGGER.error('ERROR: %s', e)
                         log_error('ERROR: %s', e)
                         email_errors()			
                         os.remove(pid_file)
@@ -431,6 +441,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         shutil.rmtree(delete_path)
 
     except Exception as e:
+        LOGGER.error('ERROR: %s', e)
         log_error('ERROR: %s', e)
 
     try:
@@ -462,9 +473,11 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                     else:
                         LOGGER.warning('AMClient returned an empty list')
                 except Exception as e:
+                    LOGGER.error('ERROR: %s', e)
                     log_error('ERROR: %s', e)
 
     except Exception as e:
+        LOGGER.error('ERROR: %s', e)
         log_error('ERROR: %s', e)
         email_errors()
         return 0
