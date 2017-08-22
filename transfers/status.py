@@ -336,7 +336,7 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
                     if l is not None:
                         listy.append(l[0].split('/')[-1])  # last element will be rightmost folder
                 except Exception as ex:
-                    log_error(ex)
+                    log_error(ex.message)
             if listy != []:
                 entries = listy
         return entries
@@ -353,7 +353,7 @@ def log_error (msg, *args, **kwargs):
 def email_errors ():
     global ERROR_MESSAGE
     if (ERROR_MESSAGE != ''):
-        msg = "An error occurred during the 'status.py' cron script:\n\n"
+        msg = "An error occurred during the Archivematica 'status.py' cron script:\n\n"
         msg += ERROR_MESSAGE
         msg += "\n\nMore information might be available in the automation tools log file (currently /var/log/archivematica/automation-tools/status-output.log)"
         # send error message as email
