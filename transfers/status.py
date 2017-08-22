@@ -350,6 +350,7 @@ def log_error (msg, *args, **kwargs):
     ERROR_MESSAGE += msg + "\n"
 
 def email_errors ():
+    global ERROR_MESSAGE
     if (ERROR_MESSAGE != ''):
         msg = "An error occurred during the 'status.py' cron script:\n\n"
         msg += ERROR_MESSAGE
