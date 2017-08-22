@@ -129,6 +129,7 @@ def _call_url_json(url, params, method):
         response = requests.post(url, data=json.dumps(params), verify=False)
     LOGGER.debug('Response: %s', response)
     if not response.ok:
+	response.raise_for_status()
         log_error('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.debug('Response: %s', response.text)
         return None
