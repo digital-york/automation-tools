@@ -58,6 +58,9 @@ LOGGER = logging.getLogger('transfer')
 
 CONFIG_FILE = None
 
+# FAM addition - add all error messages to a single variable
+ERROR_MESSAGE = ''
+
 # suppress warnings about https requests to sites with un-verified SSL certificates
 requests.packages.urllib3.disable_warnings()
 
@@ -126,7 +129,7 @@ def _call_url_json(url, params, method):
         response = requests.post(url, data=json.dumps(params), verify=False)
     LOGGER.debug('Response: %s', response)
     if not response.ok:
-        LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
+        log_error('Request to %s returned %s %s', url, response.status_code, response.reason)
         LOGGER.debug('Response: %s', response.text)
         return None
     try:
@@ -154,7 +157,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
     try:
         unit_info = _call_url_json(url, params, 'get')
     except ValueError as e:  # JSON could not be decoded
-        LOGGER.error(e.message)
+        log_error(e.message)
         return None
 
     # If Transfer is complete, get the SIP's status
@@ -170,7 +173,7 @@ def get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session):
             url = am_url + '/api/ingest/status/' + unit_info['sip_uuid'] + '/'
             unit_info = _call_url_json(url, params, 'get')
         except ValueError as e:  # JSON could not be decoded
-            LOGGER.error(e.message)
+            log_error(e.message)
         return unit_info
     if unit_info == None:
         LOGGER.warning("nothing returned from archivematica API, unit_info is empty")
@@ -223,12 +226,12 @@ def update_status(api_key, status, hydra_url, h_id, aip_uuid='', location=''):
     try:
         update = _call_url_json(hydra_url + '/api/v1/aip/' + h_id, hydra_params, 'put')
         if update == None:
-            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+            log_error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             raise
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
     except Exception as e:
-        LOGGER.error(e.message)
+        log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
 def update_dip(api_key, hydra_url, h_id, dip_uuid,current_path,resource_uri,current_location,size):
@@ -245,12 +248,12 @@ def update_dip(api_key, hydra_url, h_id, dip_uuid,current_path,resource_uri,curr
     try:
         update = _call_url_json(hydra_url + '/api/v1/dip/' + h_id, hydra_params, 'put')
         if update == None:
-            LOGGER.error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
+            log_error('ERROR: the hydra object could not be updated. Params were: ' + str(hydra_params))
             raise
         else:
             LOGGER.info('Updated hydra object: ' + str(update))
     except Exception as e:
-        LOGGER.error(e.message)
+        log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
 def waiting_dips(api_key, hydra_url):
@@ -268,7 +271,7 @@ def waiting_dips(api_key, hydra_url):
             LOGGER.info('Waiting: %s', waiting)
             return waiting
     except Exception as e:
-        LOGGER.error(e.message)
+        log_error(e.message)
         raise Exception('Problem updating the hydra object')
 
 def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
@@ -282,7 +285,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
         current_path = aip['current_path']
         return (status, current_path)
     except Exception as e:
-        LOGGER.error(e.message)
+        log_error(e.message)
 	raise
 
 
@@ -333,18 +336,26 @@ def get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_location_uuid, pat
                     if l is not None:
                         listy.append(l[0].split('/')[-1])  # last element will be rightmost folder
                 except Exception as ex:
-                    LOGGER.error(ex)
+                    log_error(ex)
             if listy != []:
                 entries = listy
         return entries
 
     except Exception as e:
-        LOGGER.error(e.message)
+        log_error(e.message)
 
 # FAM addition - handle errors - email them, ideally once, to admins
-def handle_error (error_message):
-    # send error message as email
-    send_error_email("An error occurred during the 'status.py' cron script:\n\n" + error_message)
+def log_error (error_message):
+    LOGGER.error(error_message)
+    ERROR_MESSAGE += error_message + "\n"
+
+def email_errors ():
+    if (ERROR_MESSAGE != ''):
+        msg = "An error occurred during the 'status.py' cron script:\n\n"
+        msg += ERROR_MESSAGE
+        msg += "\n\nMore information might be available in the automation tools log file (currently /var/log/archivematica/automation-tools/status-output.log)"
+        # send error message as email
+        send_error_email(msg)
 
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
@@ -396,8 +407,8 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         update_status(am_api_key, status, hydra_url, f, i.uuid,
                                       current_path)
                     except Exception as e:
-                        LOGGER.error('ERROR: %s', e)
-                        handle_error(str(e))			
+                        log_error('ERROR: %s', e)
+                        email_errors()			
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
@@ -406,8 +417,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         shutil.rmtree(delete_path)
 
     except Exception as e:
-        LOGGER.error('ERROR: %s', e)
-        handle_error(str(e))
+        log_error('ERROR: %s', e)
 
     try:
         # call the hydra api for waiting dips
@@ -438,14 +448,14 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                     else:
                         LOGGER.warning('AMClient returned an empty list')
                 except Exception as e:
-                    LOGGER.error('ERROR: %s', e)
-                    handle_error(str(e))
+                    log_error('ERROR: %s', e)
 
     except Exception as e:
-        LOGGER.error('ERROR: %s', e)
-        handle_error(str(e))
+        log_error('ERROR: %s', e)
+        email_errors()
         return 0
 
+    email_errors()
     session.commit()
     os.remove(pid_file)
     return 0
