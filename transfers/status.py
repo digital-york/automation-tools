@@ -25,7 +25,7 @@ import models
 import amclient
 
 # FAM addition - import methods to help with sending email
-from uoyglobals import send_email, send_error_email
+from uoyglobals import send_error_email_once
 
 try:
     from os import fsencode, fsdecode
@@ -364,25 +364,8 @@ def log_error (msg, *args, **kwargs):
     ERROR_MESSAGE += msg % args + "\n"
 
 def email_errors ():
-    global ERROR_MESSAGE
-    if (ERROR_MESSAGE != ''):
-        msg = "An error occurred during the Archivematica 'status.py' cron script:\n\n"
-        msg += ERROR_MESSAGE
-        msg += "\nMore information might be available in the automation tools log file (currently /var/log/archivematica/automation-tools/status-output.log)"
-        # check to see if this error has already been sent
-        last_error_file = get_setting('statuserrorfile', os.path.join(THIS_DIR, "last_status_error"))
-        if os.path.isfile(last_error_file) and os.access(last_error_file, os.R_OK):
-            with open(last_error_file, 'r') as content_file:
-                content = content_file.read()
-                if (content == msg):
-		    return
-        # write error message to file so that we don't end up sending the same email every time this script runs
-        fh = open(last_error_file, "w")
-        fh.write(msg)
-        fh.close()
-        # send error message as email
-        send_error_email(msg)
-
+    last_error_file = get_setting('statuserrorfile', os.path.join(THIS_DIR, "last_status_error"))
+    send_error_email_once(ERROR_MESSAGE, 'status', last_error_file) 
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
          config_file=None):

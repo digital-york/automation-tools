@@ -21,6 +21,9 @@ import time
 #from . import models
 import models
 
+# FAM addition - import methods to help with sending email
+from uoyglobals import send_error_email_once
+
 try:
     from os import fsencode, fsdecode
 except ImportError:
@@ -50,6 +53,8 @@ LOGGER = logging.getLogger('transfer')
 
 CONFIG_FILE = None
 
+# FAM addition - add all error messages to a single variable
+ERROR_MESSAGE = ''
 
 def get_setting(setting, default=None):
     config = configparser.SafeConfigParser()
@@ -111,7 +116,9 @@ def _call_url_json(url, params):
     response = requests.get(url, params=params)
     LOGGER.debug('Response: %s', response)
     if not response.ok:
-        LOGGER.warning('Request to %s returned %s %s', url, response.status_code, response.reason)
+        emsg = 'Request to %s returned %s %s' % (url, response.status_code, response.reason)
+        LOGGER.warning(emsg)
+        log_error(emsg)
         LOGGER.debug('Response: %s', response.text)
         return None
     try:
@@ -327,8 +334,9 @@ def start_transfer(ss_url, ss_user, ss_api_key, ts_location_uuid, ts_path, depth
         LOGGER.warning('Could not parse JSON from response: %s', response.text)
         return None
     if not response.ok or resp_json.get('error'):
-        LOGGER.error('Unable to start transfer.')
-        LOGGER.error('Response: %s', resp_json)
+        emsg = 'Unable to start transfer of %s\nResponse: %s' % (target, resp_json)
+        LOGGER.error(emsg)
+        log_error(emsg)
         new_transfer = models.Unit(path=target, unit_type='transfer', status='FAILED', current=False)
         session.add(new_transfer)
         return None
@@ -397,6 +405,15 @@ def approve_transfer(directory_name, url, am_api_key, am_user):
     else:
         return None
 
+# FAM addition - handle errors - email them, ideally once, to admins
+def log_error (msg, *args, **kwargs):
+    global ERROR_MESSAGE
+    ERROR_MESSAGE += msg % args + "\n"
+
+def email_errors ():
+    last_error_file = get_setting('transfererrorfile', os.path.join(THIS_DIR, "last_transfer_error"))
+    send_error_email_once(ERROR_MESSAGE, 'transfer', last_error_file) 
+
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False, config_file=None, log_level='INFO'):
 
@@ -436,7 +453,10 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         status_info = get_status(am_url, am_user, am_api_key, unit_uuid, unit_type, session, hide_on_complete)
         LOGGER.info('Status info: %s', status_info)
         if not status_info:
-            LOGGER.error('Could not fetch status for %s. Exiting.', unit_uuid)
+            emsg = 'Could not fetch status for %s. Exiting.' % unit_uuid
+            LOGGER.error(emsg)
+            log_error(emsg)
+            email_errors()
             os.remove(pid_file)
             return 1
         status = status_info.get('status')
@@ -470,6 +490,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
         current_unit.current = False
     new_transfer = start_transfer(ss_url, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, am_user, am_api_key, transfer_type, see_files, session)
 
+    email_errors()
     session.commit()
     os.remove(pid_file)
     return 0 if new_transfer else 1
