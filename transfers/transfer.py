@@ -417,6 +417,7 @@ def email_errors ():
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, ss_url, transfer_type, see_files, hide_on_complete=False, config_file=None, log_level='INFO'):
 
+  try:
     setup(config_file, log_level)
     LOGGER.info("Waking up")
 
@@ -489,11 +490,14 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_u
     if current_unit:
         current_unit.current = False
     new_transfer = start_transfer(ss_url, ss_user, ss_api_key, ts_uuid, ts_path, depth, am_url, am_user, am_api_key, transfer_type, see_files, session)
+  except Exception as e:
+    LOGGER.error(e.message)
+    log_error(e.message)
 
-    email_errors()
-    session.commit()
-    os.remove(pid_file)
-    return 0 if new_transfer else 1
+  email_errors()
+  session.commit()
+  os.remove(pid_file)
+  return 0 if new_transfer else 1
 
 
 if __name__ == '__main__':
