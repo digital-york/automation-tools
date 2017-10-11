@@ -368,7 +368,7 @@ def email_errors ():
     send_error_email_once(ERROR_MESSAGE, 'status', last_error_file) 
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
-         config_file=None):
+         config_file=None, archive_basepath):
     setup(config_file)
 
     LOGGER.info("Waking up")
@@ -389,6 +389,15 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
         pid = os.getpid()
         f.write(str(pid))
         f.close()
+
+    # Check to see if the given archive location exists and is writable
+    if not os.access(archive_basepath, os.W_OK | os.X_OK):
+        emsg = 'ERROR: unable to write to given archive location "' + archive_basepath + '" - exiting'
+        LOGGER.error(emsg, e)
+        log_error(emsg, e)
+        email_errors()			
+        os.remove(pid_file)
+        return 0
 
     # Get list of folders
     folders = get_transfer_folders_list(ss_url, ss_user, ss_api_key, ts_uuid, ts_path, depth)
@@ -423,9 +432,13 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         os.remove(pid_file)
                         return 0
                     if status == 'UPLOADED':
+                        # don't delete the deposited transfer, move it to the given archive location
+                        #delete_path = os.path.join(ts_basepath, i.path)
+                        #LOGGER.info('Deleting: ' + delete_path)
+                        #shutil.rmtree(delete_path)
                         delete_path = os.path.join(ts_basepath, i.path)
-                        LOGGER.info('Deleting: ' + delete_path)
-                        shutil.rmtree(delete_path)
+                        LOGGER.info('Moving ' + delete_path + ' to archive location ' + archive_basepath)
+                        shutil.move(delete_path, archive_basepath)
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
@@ -467,6 +480,7 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
         LOGGER.error('ERROR: %s', e)
         log_error('ERROR: %s', e)
         email_errors()
+        os.remove(pid_file)
         return 0
 
     email_errors()
@@ -501,6 +515,8 @@ if __name__ == '__main__':
                         default=None)
     parser.add_argument('-c', '--config-file', metavar='FILE', help='Configuration file(log/db/PID files)',
                         default=None)
+    parser.add_argument('--archive-basepath', metavar='ARCHIVEPATH', help='Absolute path to the archive location - the folder to which transfers are copied/archived after processing. Default: ""',
+                        type=fsencode, default=b'')  # Convert to bytes from unicode str provided by command line
 
     # Logging
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Increase the debugging output.')
@@ -538,4 +554,5 @@ if __name__ == '__main__':
         ss_url=args.ss_url,
         hydra_url=args.hydra_url,
         config_file=args.config_file,
+        archive_basepath=args.archive_basepath,
     ))
