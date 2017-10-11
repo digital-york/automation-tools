@@ -368,7 +368,7 @@ def email_errors ():
     send_error_email_once(ERROR_MESSAGE, 'status', last_error_file) 
 
 def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path, depth, am_url, ss_url, hydra_url,
-         config_file=None, archive_basepath):
+         archive_basepath, config_file=None):
     setup(config_file)
 
     LOGGER.info("Waking up")
@@ -553,6 +553,6 @@ if __name__ == '__main__':
         am_url=args.am_url,
         ss_url=args.ss_url,
         hydra_url=args.hydra_url,
-        config_file=args.config_file,
         archive_basepath=args.archive_basepath,
+        config_file=args.config_file,
     ))
