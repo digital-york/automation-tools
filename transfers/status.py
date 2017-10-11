@@ -423,10 +423,9 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                         update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
                         status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
                         # there is some confusion when the first status is PROCESSING and the second status is PENDING...
-                        if (status_info['status'] == 'PROCESSING' and status == 'PENDING'):
-                            status = 'PROCESSING'
-                        update_status(am_api_key, status, hydra_url, f, i.uuid,
-                                      current_path)
+                        #if (status_info['status'] == 'PROCESSING' and status == 'PENDING'):
+                        #    status = 'PROCESSING'
+                        #update_status(am_api_key, status, hydra_url, f, i.uuid, current_path)
                     except Exception as e:
                         emsg = 'ERROR: could not process ingested AIP ' + f + ' - (actual problem: %s)'
                         LOGGER.error(emsg, e)
