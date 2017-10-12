@@ -124,7 +124,9 @@ def _call_url_json(url, params):
     try:
         return response.json()
     except ValueError:  # JSON could not be decoded
-        LOGGER.warning('Could not parse JSON from response: %s', response.text)
+        emsg = 'Could not parse JSON from response: %s' % (response.text)
+        LOGGER.warning(emsg)
+        log_error(emsg)
         return None
 
 
