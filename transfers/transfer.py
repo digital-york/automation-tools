@@ -333,7 +333,9 @@ def start_transfer(ss_url, ss_user, ss_api_key, ts_location_uuid, ts_path, depth
     try:
         resp_json = response.json()
     except ValueError:
-        LOGGER.warning('Could not parse JSON from response: %s', response.text)
+        emsg = 'Could not parse JSON from response: %s' % (response.text)
+        LOGGER.error(emsg)
+	log_error(emsg)
         return None
     if not response.ok or resp_json.get('error'):
         emsg = 'Unable to start transfer of %s\nResponse: %s' % (target, resp_json)
