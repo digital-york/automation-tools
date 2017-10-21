@@ -130,8 +130,6 @@ def _call_url_json(url, params, method):
     LOGGER.debug('Response: %s', response)
     if not response.ok:
         emsg = 'Request to %s returned %s %s' % (url, response.status_code, response.reason) 
-        #LOGGER.error(emsg)
-        #log_error(emsg)
         raise Exception(emsg)
         #LOGGER.debug('Response: %s', response.text)
         #return None
@@ -297,7 +295,7 @@ def get_aip_details(uuid, ss_url, ss_user, ss_api_key):
     except Exception as e:
         emsg = 'Failed to get AIP information from Archivematica Storage Service - ' + e.message
         LOGGER.error(emsg)
-        log_error(emsg)
+        #log_error(emsg)
 	raise
 
 
@@ -421,9 +419,14 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
                     status = status_info['status']
                     try:
                         update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
-                        status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
-                        # there is some confusion when the status from get_aip_details is PENDING... (which can lead to status in rdyork being constantly changed and it sending emails)
-                        if (status == 'PENDING'):
+                        # try getting the aip details out of the storage service - this will fail if it's still processing, understandably, so ignore errors in that case
+                        try:
+                            status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
+                        except Exception as e:
+                            if status_info['status'] != "PROCESSING":
+                                raise
+                        # there is some confusion when the status from get_aip_details is PENDING or STAGING... (which can lead to status in rdyork being constantly changed and it sending emails)
+                        if (status == 'PENDING' or status == 'STAGING'):
                             status = status_info['status']
                         update_status(am_api_key, status, hydra_url, f, i.uuid, current_path)
                     except Exception as e:
