@@ -368,6 +368,8 @@ def start_transfer(ss_url, ss_user, ss_api_key, ts_location_uuid, ts_path, depth
         LOGGER.info('Failed approve, try %s of %s', i + 1, retry_count)
     else:
         LOGGER.warning('Not approved')
+        emsg = 'Transfer %s failed approval - Archivematica can not start this transfer' % (target)
+        log_error(emsg)
         new_transfer = models.Unit(uuid=None, path=target, unit_type='transfer', current=False)
         session.add(new_transfer)
         return None
