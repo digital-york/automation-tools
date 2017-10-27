@@ -407,43 +407,42 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
             f = i.path.split('/')[-1]  # last element will be rightmost folder
             if f in folders:
                 LOGGER.info('DOING ' + f)
-                if i.unit_type == 'transfer':
-                    status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
-                    status = status_info['status']
-                    status_info['status']
-                    # update hydra
-                    update_status(am_api_key, status, hydra_url, f)
-                elif i.unit_type == 'ingest':
-                    status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
-                    # update hydra
-                    status = status_info['status']
-                    try:
-                        update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
-                        # try getting the aip details out of the storage service - this will fail if it's still processing, understandably, so ignore errors in that case
+                try:
+                    if i.unit_type == 'transfer':
+                        status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
+                        status = status_info['status']
+                        status_info['status']
+                        # update hydra
+                        update_status(am_api_key, status, hydra_url, f)
+                    elif i.unit_type == 'ingest':
+                        status_info = get_status(am_url, am_user, am_api_key, i.uuid, i.unit_type, session)
+                        # update hydra
+                        status = status_info['status']
                         try:
-                            status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
+                            update_status(am_api_key, status, hydra_url, f, status_info['uuid'], status_info['path'])
+                            # try getting the aip details out of the storage service - this will fail if it's still processing, understandably, so ignore errors in that case
+                            try:
+                                status, current_path = get_aip_details(i.uuid, ss_url, ss_user, ss_api_key)
+                            except Exception as e:
+                                if status_info['status'] != "PROCESSING":
+                                    raise
+                            # there is some confusion when the status from get_aip_details is PENDING or STAGING... (which can lead to status in rdyork being constantly changed and it sending emails)
+                            if (status == 'PENDING' or status == 'STAGING'):
+                                status = status_info['status']
+                            update_status(am_api_key, status, hydra_url, f, i.uuid, current_path)
                         except Exception as e:
-                            if status_info['status'] != "PROCESSING":
-                                raise
-                        # there is some confusion when the status from get_aip_details is PENDING or STAGING... (which can lead to status in rdyork being constantly changed and it sending emails)
-                        if (status == 'PENDING' or status == 'STAGING'):
-                            status = status_info['status']
-                        update_status(am_api_key, status, hydra_url, f, i.uuid, current_path)
-                    except Exception as e:
-                        emsg = 'ERROR: could not process ingested AIP ' + f + ' - (actual problem: %s)'
-                        LOGGER.error(emsg, e)
-                        log_error(emsg, e)
-                        email_errors()			
-                        os.remove(pid_file)
-                        return 0
-                    if status == 'UPLOADED':
-                        # don't delete the deposited transfer, move it to the given archive location
-                        #delete_path = os.path.join(ts_basepath, i.path)
-                        #LOGGER.info('Deleting: ' + delete_path)
-                        #shutil.rmtree(delete_path)
-                        delete_path = os.path.join(ts_basepath, i.path)
-                        LOGGER.info('Moving ' + delete_path + ' to archive location ' + archive_basepath)
-                        shutil.move(delete_path, archive_basepath)
+                            emsg = 'ERROR: could not process ingested AIP ' + f + ' - (actual problem: %s)'
+                            LOGGER.error(emsg, e)
+                            log_error(emsg, e)
+                        if status == 'UPLOADED':
+                            # don't delete the deposited transfer, move it to the given archive location
+                            delete_path = os.path.join(ts_basepath, i.path)
+                            LOGGER.info('Moving ' + delete_path + ' to archive location ' + archive_basepath)
+                            shutil.move(delete_path, archive_basepath)
+                except Exception as e:
+                    emsg = 'ERROR: could not process "' + f + '" - (actual problem: %s)'
+                    LOGGER.error(emsg, e)
+                    log_error(emsg, e)
 
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
@@ -484,9 +483,6 @@ def main(am_user, am_api_key, ss_user, ss_api_key, ts_uuid, ts_basepath, ts_path
     except Exception as e:
         LOGGER.error('ERROR: %s', e)
         log_error('ERROR: %s', e)
-        email_errors()
-        os.remove(pid_file)
-        return 0
 
     email_errors()
     session.commit()
