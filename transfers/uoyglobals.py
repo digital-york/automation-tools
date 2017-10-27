@@ -29,6 +29,7 @@ def send_error_email_once (error_message, script, error_file):
     msg += error_message
     msg += "\nMore information might be available in the automation tools log file (currently /var/log/archivematica/automation-tools/" + script + "-output.log)"
     msg += "\nAlso check the Archivematica dashboard (transfer and ingest tabs) to see if there are any problems"
+    msg += "\nAlso might be worth querying the transfers database (run 'sqlite3 /var/archivematica/automation-tools/transfers.db' and type 'select * from unit;', then '.quit' to quit)"
     # check to see if this error has already been sent
     if os.path.isfile(error_file) and os.access(error_file, os.R_OK):
       with open(error_file, 'r') as content_file:
